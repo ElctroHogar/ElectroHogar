@@ -9,12 +9,12 @@
 <meta name="theme-color" content="#4f8ef7">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d0f18'/><text y='62' x='50' text-anchor='middle' font-size='60'>⚡</text></svg>">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SecondShop PRO</title>
+<title>Electro Hogar — Móvil</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root{--bg:#0d0f18;--s1:#141720;--s2:#1c2030;--s3:#242840;--bd:#2a2f45;--ac:#4f8ef7;--acd:#3a7ae0;--gr:#22d48f;--rd:#f7506a;--or:#f7923a;--pu:#a855f7;--ye:#f7b731;--cy:#22d4d4;--tx:#e4e8f5;--t2:#8b92b3;--t3:#5a6080;--r:10px;--r2:7px;--sw:225px}
+:root{--bg:#0d0f18;--s1:#141720;--s2:#1c2030;--s3:#242840;--bd:#2a2f45;--ac:#4f8ef7;--acd:#3a7ae0;--gr:#22d48f;--rd:#f7506a;--or:#f7923a;--pu:#a855f7;--ye:#f7b731;--cy:#22d4d4;--tx:#e4e8f5;--t2:#8b92b3;--t3:#5a6080;--r:10px;--r2:7px;--sw:0px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
 /* LOGIN */
@@ -53,7 +53,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 #app{display:none;min-height:100vh}
 #app.on{display:flex}
 /* SIDEBAR */
-#sb{width:var(--sw);min-height:100vh;background:var(--s1);border-right:1px solid var(--bd);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:50}
+#sb{display:none!important}
 .sb-logo{padding:13px;border-bottom:1px solid var(--bd)}
 .sb-logo .nm{font-size:.95rem;font-weight:900}.nm .a{color:var(--ac)}
 .sb-logo .sub{font-size:.56rem;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
@@ -69,7 +69,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .sdot{width:8px;height:8px;border-radius:50%;background:var(--bd);display:inline-block;transition:background .5s;margin-right:4px}
 .sdot.ok{background:var(--gr)}
 /* MAIN */
-#main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+#main{margin-left:0!important;flex:1;display:flex;flex-direction:column;min-height:100vh;padding-bottom:68px}
 #topbar{background:var(--s1);border-bottom:1px solid var(--bd);height:48px;display:flex;align-items:center;padding:0 15px;gap:8px;position:sticky;top:0;z-index:40}
 .tt{font-weight:700;font-size:.88rem;flex:1}
 #content{padding:16px;flex:1}
@@ -243,7 +243,38 @@ select option{background:var(--s1)}
 .db-st{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:6px;margin-bottom:10px}
 .dsm{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2);padding:8px;text-align:center}
 .dsm-v{font-size:1.05rem;font-weight:700;font-family:monospace;color:var(--ac)}.dsm-l{font-size:.61rem;color:var(--t2)}
-::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#353c58;border-radius:3px}
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-thumb{background:#353c58;border-radius:3px}
+#bnav{position:fixed;bottom:0;left:0;right:0;height:62px;background:var(--s1);border-top:1px solid var(--bd);display:flex;align-items:center;z-index:100;padding:0 2px;gap:2px}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 1px;cursor:pointer;border-radius:8px;color:var(--t2);font-size:.5rem;font-weight:600;border:none;background:none;min-height:54px;position:relative}
+.bn:active{background:var(--s2)}.bn.on{color:var(--ac)}
+.bn .bni{font-size:1.35rem;display:block;line-height:1.1}
+.bn .b2{position:absolute;top:3px;right:6px;background:var(--rd);color:#fff;border-radius:10px;padding:0 4px;font-size:.48rem;font-weight:700;min-width:13px;text-align:center}
+#mmenu{position:fixed;bottom:62px;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);z-index:99;display:none;padding:10px;animation:slideUp .2s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#mmenu.on{display:block}
+.mmg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.mmi{display:flex;flex-direction:column;align-items:center;gap:3px;padding:11px 4px;background:var(--s2);border-radius:var(--r);cursor:pointer;font-size:.63rem;font-weight:600;color:var(--t2);border:1px solid var(--bd)}
+.mmi:active{background:rgba(79,142,247,.15);color:var(--ac);border-color:var(--ac)}
+.mmi span{font-size:1.5rem}
+#topbar{height:52px;padding:0 12px}
+#content{padding:11px}
+.btn{padding:10px 13px;font-size:.83rem}
+.bsm{padding:8px 11px}
+.bic{padding:8px 10px;font-size:.82rem;min-width:36px;text-align:center}
+input,select,textarea{padding:10px 11px;font-size:16px!important}
+label{font-size:.78rem}
+table{font-size:.76rem}
+th{padding:7px 9px;font-size:.62rem}
+td{padding:9px 8px}
+.ph h2{font-size:.95rem}
+.sv{font-size:1.35rem}
+.dg{grid-template-columns:1fr!important}
+.sg{grid-template-columns:repeat(2,1fr)!important}
+.cats{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
+.cat{min-height:68px}.cat .ci{font-size:1.55rem}
+.ov.on{align-items:flex-end!important;padding:0!important}
+.ov.on .modal{max-width:100%!important;border-radius:14px 14px 0 0!important;max-height:92vh!important}
+*{-webkit-tap-highlight-color:rgba(79,142,247,.15);touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -722,6 +753,30 @@ select option{background:var(--s1)}
 </div><!-- /main -->
 </div><!-- /app -->
 
+<!-- BOTTOM NAV -->
+<div id="bnav">
+  <button class="bn on" id="bn-d" onclick="mgo('dash',this)"><span class="bni">📊</span>Panel</button>
+  <button class="bn" id="bn-v" onclick="mgo('ventas',this)"><span class="bni">💰</span>Ventas</button>
+  <button class="bn" id="bn-a" onclick="mgo('compras',this)"><span class="bni">🛒</span>Compras</button>
+  <button class="bn" id="bn-r" onclick="mgo('reps',this)" style="position:relative"><span class="bni">🔧</span>Repars.<span class="b2" id="bnr2" style="display:none">0</span></button>
+  <button class="bn" id="bn-m" onclick="toggleMM(this)"><span class="bni">☰</span>Más</button>
+</div>
+<div id="mmenu">
+  <div class="mmg">
+    <div class="mmi" onclick="mgo('inv');closeMM()"><span>📦</span>Inventario</div>
+    <div class="mmi" onclick="mgo('cred');closeMM()"><span>💳</span>Crédito</div>
+    <div class="mmi" onclick="mgo('pedidos');closeMM()"><span>📋</span>Pedidos</div>
+    <div class="mmi" onclick="mgo('gastos');closeMM()"><span>💸</span>Gastos</div>
+    <div class="mmi" onclick="mgo('clientes');closeMM()"><span>👥</span>Clientes</div>
+    <div class="mmi" onclick="mgo('tareas');closeMM()"><span>📝</span>Tareas</div>
+    <div class="mmi" onclick="mgo('qr');closeMM()"><span>📷</span>QR</div>
+    <div class="mmi" onclick="mgo('informes');closeMM()"><span>📈</span>Informes</div>
+    <div class="mmi" onclick="mgo('db');closeMM()"><span>🗄️</span>Datos</div>
+    <div class="mmi" onclick="mgo('cfg');closeMM()"><span>⚙️</span>Config.</div>
+    <div class="mmi" onclick="doLock()"><span>🔒</span>Bloquear</div>
+    <div class="mmi" onclick="closeMM()"><span>✕</span>Cerrar</div>
+  </div>
+</div>
 <!-- WORKER OVERLAY -->
 <div id="wov">
   <div id="wtop">
@@ -2230,6 +2285,33 @@ function setFormDate(inputId){
   document.getElementById(inputId).value = today();
 }
 
+
+
+// ══ MOBILE NAV ══
+const MGO_TITLES={dash:'📊 Panel',ventas:'💰 Ventas',compras:'🛒 Compras',reps:'🔧 Reparaciones',inv:'📦 Inventario',cred:'💳 Crédito',pedidos:'📋 Pedidos',gastos:'💸 Gastos',clientes:'👥 Clientes',tareas:'📝 Tareas',qr:'📷 QR Scanner',informes:'📈 Informes',db:'🗄️ Datos',cfg:'⚙️ Config.'};
+const MGO_BNS={dash:'bn-d',ventas:'bn-v',compras:'bn-a',reps:'bn-r'};
+function mgo(id,el){
+  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('on'));
+  if(MGO_BNS[id]){document.getElementById(MGO_BNS[id])?.classList.add('on');}
+  else{document.getElementById('bn-m')?.classList.add('on');}
+  go(id,null);
+  const tbt=document.getElementById('tbt');
+  if(tbt)tbt.textContent=MGO_TITLES[id]||id;
+  window.scrollTo(0,0);
+}
+function toggleMM(el){
+  const m=document.getElementById('mmenu');
+  m.classList.contains('on')?closeMM():(m.classList.add('on'),el.classList.add('on'));
+}
+function closeMM(){
+  document.getElementById('mmenu')?.classList.remove('on');
+  document.getElementById('bn-m')?.classList.remove('on');
+}
+document.addEventListener('click',e=>{
+  const m=document.getElementById('mmenu');
+  const btn=document.getElementById('bn-m');
+  if(m&&!m.contains(e.target)&&btn&&!btn.contains(e.target))closeMM();
+});
 
 
 // ══ PWA - INLINE SERVICE WORKER ══
