@@ -2231,32 +2231,6 @@ function setFormDate(inputId){
 
 
 
-// ══ PWA - INLINE SERVICE WORKER ══
-if('serviceWorker' in navigator){
-  // Create SW as blob URL - no external file needed!
-  const swCode = `
-    const CACHE = 'eh-v1';
-    self.addEventListener('install', e => {
-      self.skipWaiting();
-    });
-    self.addEventListener('activate', e => {
-      self.clients.claim();
-    });
-    self.addEventListener('fetch', e => {
-      if(e.request.url.includes('firebase') || 
-         e.request.url.includes('googleapis') ||
-         e.request.url.includes('claudeusercontent')) return;
-      e.respondWith(
-        caches.match(e.request).then(cached => cached || fetch(e.request))
-      );
-    });
-  `;
-  const blob = new Blob([swCode], {type:'application/javascript'});
-  const swUrl = URL.createObjectURL(blob);
-  navigator.serviceWorker.register(swUrl)
-    .then(r => console.log('SW OK'))
-    .catch(e => console.log('SW skip:', e.message));
-}
 
 // ══ INIT ══
 applyAll();updateB();
