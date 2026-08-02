@@ -1037,6 +1037,14 @@ td{padding:9px 8px}
   <div id="ps1">
     <div class="fg" style="margin-bottom:10px"><label>Seleccionar venta</label><select id="psel" style="width:100%"><option value="">-- Seleccionar --</option></select></div>
     <div style="font-size:.76rem;color:var(--t2);margin-bottom:8px">Tipo de documento:</div>
+    <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--s2);border-radius:var(--r2);margin-bottom:8px;font-size:.78rem">
+      <span>IVA en ticket:</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn bsm" id="iva-si" onclick="setTicketIVA(true,this)" style="background:var(--ac);color:#fff;border:none">✅ Con IVA</button>
+        <button class="btn bsm b-gh" id="iva-no" onclick="setTicketIVA(false,this)">❌ Sin IVA</button>
+      </div>
+      <span style="color:var(--t2);font-size:.7rem" id="iva-pct">(${CFG?.iva||21}%)</span>
+    </div>
     <div class="doc-opts">
       <div class="doc-opt on" onclick="selDoc('f',this)"><span class="di">🧾</span><div class="dl">Factura</div><div class="ds">Con IVA</div></div>
       <div class="doc-opt" onclick="selDoc('a',this)"><span class="di">📄</span><div class="dl">Albarán</div><div class="ds">Sin facturar</div></div>
@@ -1471,6 +1479,18 @@ function showPreview(){
   document.getElementById('pdoc').innerHTML=buildDoc(docType,printV);
 }
 function backP(){document.getElementById('ps1').style.display='block';document.getElementById('ps2').style.display='none';document.getElementById('pma1').style.display='flex';document.getElementById('pma2').style.display='none';}
+
+let ticketShowIVA = true;
+function setTicketIVA(show, el){
+  ticketShowIVA = show;
+  document.getElementById('iva-si').style.background = show ? 'var(--ac)' : '';
+  document.getElementById('iva-si').style.color = show ? '#fff' : '';
+  document.getElementById('iva-si').className = show ? 'btn bsm' : 'btn bsm b-gh';
+  document.getElementById('iva-no').className = !show ? 'btn bsm' : 'btn bsm b-gh';
+  document.getElementById('iva-no').style.background = !show ? 'var(--rd)' : '';
+  document.getElementById('iva-no').style.color = !show ? '#fff' : '';
+  toast(show ? '✅ Ticket con IVA' : '❌ Ticket sin IVA', 'i');
+}
 function buildDoc(type,v){
   const shop=CFG.shop||'SecondShop PRO';const q=v.qty||1;const sub=v.prix*q;
   const ivaA=CFG.showiva?sub*(CFG.iva||21)/100:0;const tot=sub+ivaA;
@@ -1547,7 +1567,37 @@ function buildDoc(type,v){
     ${shop}${CFG.tel?' · '+CFG.tel:''}${CFG.email?' · '+CFG.email:''}${CFG.slogan?' — '+CFG.slogan:''}
   </div>
 </div>`;
-  if(type==='t')return`<div class="tkt"><div class="tkt-c tkt-b" style="font-size:14px">${shop}</div><div class="tkt-c" style="font-size:10px">${CFG.addr||''}</div><div class="tkt-c" style="font-size:10px">${CFG.tel||''}</div><div class="tkt-ln"></div><div class="tkt-c tkt-b">*** TICKET ***</div><div class="tkt-r"><span>Ref:</span><span>${num}</span></div><div class="tkt-r"><span>Fecha:</span><span>${fd(v.date)}</span></div><div class="tkt-r"><span>Cliente:</span><span>${v.cli}</span></div><div class="tkt-ln"></div><div class="tkt-b">${v.art}</div>${v.serie?`<div style="font-size:10px">S/N: ${v.serie}</div>`:''}<div class="tkt-r"><span>${q} × ${fm(v.prix)}</span><span>${fm(sub)}</span></div>${CFG.showiva?`<div class="tkt-r"><span>IVA (${CFG.iva}%):</span><span>${fm(ivaA)}</span></div>`:''}<div class="tkt-ln"></div><div class="tkt-r tkt-b"><span>TOTAL:</span><span>${fm(tot)}</span></div><div class="tkt-r"><span>Pago:</span><span>${v.pay}</span></div><div class="tkt-ln"></div><div class="tkt-c" style="font-size:10px">¡Gracias por su compra!</div><div class="tkt-c" style="font-size:9px">${CFG.slogan||''}</div></div>`;
+  if(type==='t'||type==='ts'){
+    const showI = type==='t' ? ticketShowIVA : false;
+    const tIva = showI ? ivaA : 0;
+    const tTot = sub + tIva;
+    return`<div class="tkt">
+      <div class="tkt-c tkt-b" style="font-size:14px">${shop}</div>
+      ${CFG.slogan?`<div class="tkt-c" style="font-size:9px;font-style:italic">${CFG.slogan}</div>`:''}
+      <div class="tkt-c" style="font-size:10px">${CFG.addr||''}</div>
+      <div class="tkt-c" style="font-size:10px">${CFG.tel||''}${CFG.email?' · '+CFG.email:''}</div>
+      ${CFG.cif?`<div class="tkt-c" style="font-size:9px">CIF: ${CFG.cif}</div>`:''}
+      <div class="tkt-ln"></div>
+      <div class="tkt-c tkt-b">*** TICKET ${showI?'':'(SIN IVA) '}***</div>
+      <div class="tkt-r"><span>Ref:</span><span>${num}</span></div>
+      <div class="tkt-r"><span>Fecha:</span><span>${fd(v.date)}${v.hora?' '+v.hora:''}</span></div>
+      <div class="tkt-r"><span>Cliente:</span><span>${v.cli}</span></div>
+      <div class="tkt-ln"></div>
+      <div class="tkt-b">${v.art}</div>
+      <div style="font-size:10px;color:#666">${v.cat}</div>
+      ${v.serie?`<div style="font-size:9px;font-family:monospace">S/N: ${v.serie}</div>`:''}
+      <div class="tkt-r" style="margin-top:4px"><span>${q} × ${fm(v.prix)}</span><span>${fm(sub)}</span></div>
+      ${showI?`<div class="tkt-r"><span>Base imponible:</span><span>${fm(sub)}</span></div><div class="tkt-r"><span>IVA (${CFG.iva||21}%):</span><span>${fm(tIva)}</span></div>`:''}
+      <div class="tkt-ln"></div>
+      <div class="tkt-r tkt-b" style="font-size:13px"><span>TOTAL${showI?'':' (s/IVA)'}:</span><span>${fm(tTot)}</span></div>
+      <div class="tkt-r"><span>Pago:</span><span>${v.pay}</span></div>
+      ${v.notes?`<div style="font-size:9px;color:#666;margin-top:3px">${v.notes}</div>`:''}
+      <div class="tkt-ln"></div>
+      <div class="tkt-c" style="font-size:10px">¡Gracias por su compra!</div>
+      ${CFG.slogan?`<div class="tkt-c" style="font-size:9px;color:#888">${CFG.slogan}</div>`:''}
+      <div class="tkt-c" style="font-size:8px;color:#aaa;margin-top:4px">${shop} · ${CFG.tel||''}</div>
+    </div>`;
+  }
   return '';
 }
 function doPrint(){
@@ -2284,33 +2334,6 @@ function setFormDate(inputId){
   document.getElementById(inputId).value = today();
 }
 
-
-
-// ══ MOBILE NAV ══
-const MGO_TITLES={dash:'📊 Panel',ventas:'💰 Ventas',compras:'🛒 Compras',reps:'🔧 Reparaciones',inv:'📦 Inventario',cred:'💳 Crédito',pedidos:'📋 Pedidos',gastos:'💸 Gastos',clientes:'👥 Clientes',tareas:'📝 Tareas',qr:'📷 QR Scanner',informes:'📈 Informes',db:'🗄️ Datos',cfg:'⚙️ Config.'};
-const MGO_BNS={dash:'bn-d',ventas:'bn-v',compras:'bn-a',reps:'bn-r'};
-function mgo(id,el){
-  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('on'));
-  if(MGO_BNS[id]){document.getElementById(MGO_BNS[id])?.classList.add('on');}
-  else{document.getElementById('bn-m')?.classList.add('on');}
-  go(id,null);
-  const tbt=document.getElementById('tbt');
-  if(tbt)tbt.textContent=MGO_TITLES[id]||id;
-  window.scrollTo(0,0);
-}
-function toggleMM(el){
-  const m=document.getElementById('mmenu');
-  m.classList.contains('on')?closeMM():(m.classList.add('on'),el.classList.add('on'));
-}
-function closeMM(){
-  document.getElementById('mmenu')?.classList.remove('on');
-  document.getElementById('bn-m')?.classList.remove('on');
-}
-document.addEventListener('click',e=>{
-  const m=document.getElementById('mmenu');
-  const btn=document.getElementById('bn-m');
-  if(m&&!m.contains(e.target)&&btn&&!btn.contains(e.target))closeMM();
-});
 
 
 

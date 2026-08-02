@@ -1003,6 +1003,14 @@ textarea{font-size:16px!important}
   <div id="ps1">
     <div class="fg" style="margin-bottom:10px"><label>Seleccionar venta</label><select id="psel" style="width:100%"><option value="">-- Seleccionar --</option></select></div>
     <div style="font-size:.76rem;color:var(--t2);margin-bottom:8px">Tipo de documento:</div>
+    <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--s2);border-radius:var(--r2);margin-bottom:8px;font-size:.78rem">
+      <span>IVA en ticket:</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn bsm" id="iva-si" onclick="setTicketIVA(true,this)" style="background:var(--ac);color:#fff;border:none">✅ Con IVA</button>
+        <button class="btn bsm b-gh" id="iva-no" onclick="setTicketIVA(false,this)">❌ Sin IVA</button>
+      </div>
+      <span style="color:var(--t2);font-size:.7rem" id="iva-pct">(${CFG?.iva||21}%)</span>
+    </div>
     <div class="doc-opts">
       <div class="doc-opt on" onclick="selDoc('f',this)"><span class="di">🧾</span><div class="dl">Factura</div><div class="ds">Con IVA</div></div>
       <div class="doc-opt" onclick="selDoc('a',this)"><span class="di">📄</span><div class="dl">Albarán</div><div class="ds">Sin facturar</div></div>
@@ -1390,12 +1398,12 @@ function saveV(doPrint){
   const qty=parseInt(document.getElementById('vqty').value)||1;
   const serie=document.getElementById('vserie').value.trim();
   const pay=document.getElementById('vpay').value;
-  const v={id:uid(),ref:'V-'+String(DB.nid-1).padStart(4,'0'),date:today(),art,cat:getCat('cv'),cli:document.getElementById('vcli').value.trim()||'—',cout,prix,qty,ben:(prix-cout)*qty,pay,serie,notes:document.getElementById('vnotes').value.trim()};
+  const vDateVal=document.getElementById('vdate')?.value||today();const vHoraVal=document.getElementById('vhora')?.value||'';const v={id:uid(),ref:'V-'+String(DB.nid-1).padStart(4,'0'),date:vDateVal,hora:vHoraVal,art,cat:getCat('cv'),cli:document.getElementById('vcli').value.trim()||'—',cout,prix,qty,ben:(prix-cout)*qty,pay,serie,notes:document.getElementById('vnotes').value.trim()};
   DB.v.unshift(v);
   const inv=DB.i.find(x=>x.serie&&x.serie===serie&&x.etat==='Disponible');if(inv)inv.etat='Vendido';
   if(pay==='Crédito')DB.cr.unshift({id:uid(),type:'cliente',nom:v.cli,tel:'',motif:'Venta '+v.ref,mnt:v.prix*qty,pay:0,date:today(),ech:''});
   autoCLI(v.cli);save();cm('mv');
-  ['vart','vcli','vcout','vprix','vserie','vnotes'].forEach(x=>document.getElementById(x).value='');
+  ['vart','vcli','vcout','vprix','vserie','vnotes','vdate','vhora'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
   document.getElementById('vqty').value='1';document.getElementById('vben').style.display='none';clrCat('cv');
   printV=v;renderV();updateB();populateMF();
   toast('✅ '+v.ref+' · +'+fm(v.ben));
@@ -1412,7 +1420,7 @@ function renderV(){
     <td class="mono">${fm(v.prix)}${v.qty>1?' ×'+v.qty:''}</td>
     <td class="${v.ben>=0?'pos':'neg'}">${v.ben>=0?'+':''}${fm(v.ben)}</td>
     <td><span class="bx ${PB[v.pay]||'bk'}">${v.pay}</span></td>
-    <td style="white-space:nowrap"><button class="bic" onclick="openPrint(DB.v[${i}])">🖨️</button> <button class="bic" onclick="delV(${i})">🗑</button></td>
+    <td style="white-space:nowrap"><button class="bic" onclick="openPrint(DB.v[${i}])">🖨️</button> <button class="bic" onclick="openEditV(${i})">✏️</button> <button class="bic" onclick="delV(${i})">🗑</button></td>
   </tr>`).join('');
 }
 function delV(i){if(confirm('¿Eliminar?')){DB.v.splice(i,1);save();renderV();}}
@@ -1437,6 +1445,18 @@ function showPreview(){
   document.getElementById('pdoc').innerHTML=buildDoc(docType,printV);
 }
 function backP(){document.getElementById('ps1').style.display='block';document.getElementById('ps2').style.display='none';document.getElementById('pma1').style.display='flex';document.getElementById('pma2').style.display='none';}
+
+let ticketShowIVA = true;
+function setTicketIVA(show, el){
+  ticketShowIVA = show;
+  document.getElementById('iva-si').style.background = show ? 'var(--ac)' : '';
+  document.getElementById('iva-si').style.color = show ? '#fff' : '';
+  document.getElementById('iva-si').className = show ? 'btn bsm' : 'btn bsm b-gh';
+  document.getElementById('iva-no').className = !show ? 'btn bsm' : 'btn bsm b-gh';
+  document.getElementById('iva-no').style.background = !show ? 'var(--rd)' : '';
+  document.getElementById('iva-no').style.color = !show ? '#fff' : '';
+  toast(show ? '✅ Ticket con IVA' : '❌ Ticket sin IVA', 'i');
+}
 function buildDoc(type,v){
   const shop=CFG.shop||'SecondShop PRO';const q=v.qty||1;const sub=v.prix*q;
   const ivaA=CFG.showiva?sub*(CFG.iva||21)/100:0;const tot=sub+ivaA;
@@ -1513,7 +1533,37 @@ function buildDoc(type,v){
     ${shop}${CFG.tel?' · '+CFG.tel:''}${CFG.email?' · '+CFG.email:''}${CFG.slogan?' — '+CFG.slogan:''}
   </div>
 </div>`;
-  if(type==='t')return`<div class="tkt"><div class="tkt-c tkt-b" style="font-size:14px">${shop}</div><div class="tkt-c" style="font-size:10px">${CFG.addr||''}</div><div class="tkt-c" style="font-size:10px">${CFG.tel||''}</div><div class="tkt-ln"></div><div class="tkt-c tkt-b">*** TICKET ***</div><div class="tkt-r"><span>Ref:</span><span>${num}</span></div><div class="tkt-r"><span>Fecha:</span><span>${fd(v.date)}</span></div><div class="tkt-r"><span>Cliente:</span><span>${v.cli}</span></div><div class="tkt-ln"></div><div class="tkt-b">${v.art}</div>${v.serie?`<div style="font-size:10px">S/N: ${v.serie}</div>`:''}<div class="tkt-r"><span>${q} × ${fm(v.prix)}</span><span>${fm(sub)}</span></div>${CFG.showiva?`<div class="tkt-r"><span>IVA (${CFG.iva}%):</span><span>${fm(ivaA)}</span></div>`:''}<div class="tkt-ln"></div><div class="tkt-r tkt-b"><span>TOTAL:</span><span>${fm(tot)}</span></div><div class="tkt-r"><span>Pago:</span><span>${v.pay}</span></div><div class="tkt-ln"></div><div class="tkt-c" style="font-size:10px">¡Gracias por su compra!</div><div class="tkt-c" style="font-size:9px">${CFG.slogan||''}</div></div>`;
+  if(type==='t'||type==='ts'){
+    const showI = type==='t' ? ticketShowIVA : false;
+    const tIva = showI ? ivaA : 0;
+    const tTot = sub + tIva;
+    return`<div class="tkt">
+      <div class="tkt-c tkt-b" style="font-size:14px">${shop}</div>
+      ${CFG.slogan?`<div class="tkt-c" style="font-size:9px;font-style:italic">${CFG.slogan}</div>`:''}
+      <div class="tkt-c" style="font-size:10px">${CFG.addr||''}</div>
+      <div class="tkt-c" style="font-size:10px">${CFG.tel||''}${CFG.email?' · '+CFG.email:''}</div>
+      ${CFG.cif?`<div class="tkt-c" style="font-size:9px">CIF: ${CFG.cif}</div>`:''}
+      <div class="tkt-ln"></div>
+      <div class="tkt-c tkt-b">*** TICKET ${showI?'':'(SIN IVA) '}***</div>
+      <div class="tkt-r"><span>Ref:</span><span>${num}</span></div>
+      <div class="tkt-r"><span>Fecha:</span><span>${fd(v.date)}${v.hora?' '+v.hora:''}</span></div>
+      <div class="tkt-r"><span>Cliente:</span><span>${v.cli}</span></div>
+      <div class="tkt-ln"></div>
+      <div class="tkt-b">${v.art}</div>
+      <div style="font-size:10px;color:#666">${v.cat}</div>
+      ${v.serie?`<div style="font-size:9px;font-family:monospace">S/N: ${v.serie}</div>`:''}
+      <div class="tkt-r" style="margin-top:4px"><span>${q} × ${fm(v.prix)}</span><span>${fm(sub)}</span></div>
+      ${showI?`<div class="tkt-r"><span>Base imponible:</span><span>${fm(sub)}</span></div><div class="tkt-r"><span>IVA (${CFG.iva||21}%):</span><span>${fm(tIva)}</span></div>`:''}
+      <div class="tkt-ln"></div>
+      <div class="tkt-r tkt-b" style="font-size:13px"><span>TOTAL${showI?'':' (s/IVA)'}:</span><span>${fm(tTot)}</span></div>
+      <div class="tkt-r"><span>Pago:</span><span>${v.pay}</span></div>
+      ${v.notes?`<div style="font-size:9px;color:#666;margin-top:3px">${v.notes}</div>`:''}
+      <div class="tkt-ln"></div>
+      <div class="tkt-c" style="font-size:10px">¡Gracias por su compra!</div>
+      ${CFG.slogan?`<div class="tkt-c" style="font-size:9px;color:#888">${CFG.slogan}</div>`:''}
+      <div class="tkt-c" style="font-size:8px;color:#aaa;margin-top:4px">${shop} · ${CFG.tel||''}</div>
+    </div>`;
+  }
   return '';
 }
 function doPrint(){
@@ -1528,11 +1578,11 @@ function saveA(){
   const art=document.getElementById('aart').value.trim();if(!art){toast('¿Producto?','e');return;}
   const prix=parseFloat(document.getElementById('aprix').value)||0;
   const qty=parseInt(document.getElementById('aqty').value)||1;
-  const a={id:uid(),ref:'A-'+String(DB.nid-1).padStart(4,'0'),date:today(),art,cat:getCat('ca'),serie:document.getElementById('aserie').value.trim(),prix,nom:document.getElementById('anom').value.trim(),dni:document.getElementById('adni').value.trim(),telv:document.getElementById('atel').value.trim(),etat:document.getElementById('aetat').value,pv:parseFloat(document.getElementById('apv').value)||0,qty,notes:document.getElementById('anotes').value.trim()};
+  const aDateVal=document.getElementById('adate')?.value||today();const aHoraVal=document.getElementById('ahora')?.value||'';const a={id:uid(),ref:'A-'+String(DB.nid-1).padStart(4,'0'),date:aDateVal,hora:aHoraVal,art,cat:getCat('ca'),serie:document.getElementById('aserie').value.trim(),prix,nom:document.getElementById('anom').value.trim(),dni:document.getElementById('adni').value.trim(),telv:document.getElementById('atel').value.trim(),etat:document.getElementById('aetat').value,pv:parseFloat(document.getElementById('apv').value)||0,qty,notes:document.getElementById('anotes').value.trim()};
   DB.a.unshift(a);
   if(CFG.autoinv)DB.i.unshift({id:uid(),ref:a.ref,art,cat:a.cat,serie:a.serie,cout:prix,pv:a.pv,etat:'Disponible',qty,date:today()});
   autoCLI(a.nom);save();cm('ma');
-  ['aart','aserie','aprix','anom','adni','atel','apv','anotes'].forEach(x=>document.getElementById(x).value='');
+  ['aart','aserie','aprix','anom','adni','atel','apv','anotes','adate','ahora'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});
   document.getElementById('aqty').value='1';clrCat('ca');
   renderA();populateMF();toast('🛒 Compra registrada');
 }
@@ -1546,7 +1596,7 @@ function renderA(){
     <td class="mono" style="font-size:.67rem">${a.dni||'—'}</td>
     <td class="mono">${fm(a.prix)}</td>
     <td><span class="bx ${EB[a.etat]||'bk'}">${a.etat}</span></td>
-    <td style="white-space:nowrap"><button class="bic" onclick="printC(${i})">🖨️</button> <button class="bic" onclick="delA(${i})">🗑</button></td>
+    <td style="white-space:nowrap"><button class="bic" onclick="printC(${i})">🖨️</button> <button class="bic" onclick="openEditA(${i})">✏️</button> <button class="bic" onclick="delA(${i})">🗑</button></td>
   </tr>`).join('');
 }
 function delA(i){if(confirm('¿Eliminar?')){DB.a.splice(i,1);save();renderA();}}
@@ -1561,9 +1611,9 @@ let repIdx=-1;
 function saveR(){
   const dev=document.getElementById('rdev').value.trim();if(!dev){toast('¿Dispositivo?','e');return;}
   const cli=document.getElementById('rcli').value.trim()||'—';
-  const r={id:uid(),ref:'REP-'+String(DB.nid-1).padStart(4,'0'),date:today(),dev,cat:getCat('cr'),imei:document.getElementById('rimei').value.trim(),cli,tel:document.getElementById('rtel').value.trim(),cat2:document.getElementById('rcat').value,prob:document.getElementById('rprob').value.trim(),cout:parseFloat(document.getElementById('rcout').value)||0,liv:document.getElementById('rdate').value,notes:document.getElementById('rnotes').value.trim(),ei:0,log:[]};
+  const rHoraVal=document.getElementById('rhora')?.value||'';const r={id:uid(),ref:'REP-'+String(DB.nid-1).padStart(4,'0'),date:today(),hora:rHoraVal,dev,cat:getCat('cr'),imei:document.getElementById('rimei').value.trim(),cli,tel:document.getElementById('rtel').value.trim(),cat2:document.getElementById('rcat').value,prob:document.getElementById('rprob').value.trim(),cout:parseFloat(document.getElementById('rcout').value)||0,liv:document.getElementById('rdate').value,notes:document.getElementById('rnotes').value.trim(),ei:0,log:[]};
   DB.r.unshift(r);autoCLI(cli,document.getElementById('rtel').value.trim());save();cm('mr');
-  ['rdev','rimei','rcli','rtel','rprob','rcout','rdate','rnotes'].forEach(x=>document.getElementById(x).value='');clrCat('cr');
+  ['rdev','rimei','rcli','rtel','rprob','rcout','rdate','rnotes','rhora'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});clrCat('cr');
   renderR();updateB();populateMF();toast('🔧 '+r.ref+' registrada');
 }
 function openAV(i){repIdx=i;const r=DB.r[i];document.getElementById('avtit').textContent='🔧 '+r.dev+' · '+r.ref;document.getElementById('avnote').value='';document.getElementById('avcout').value='';document.getElementById('avbar').innerHTML='<div style="display:flex">'+RE.map((s,si)=>`<span style="flex:1;padding:2px;border-bottom:2px solid ${si<r.ei?'var(--gr)':si===r.ei?'var(--ac)':'var(--bd)'};font-size:.57rem;font-weight:700;text-align:center;color:${si<r.ei?'var(--gr)':si===r.ei?'var(--ac)':'var(--t3)'}">${s}</span>`).join('')+'</div>';om('mav');}
@@ -1579,6 +1629,7 @@ function renderR(){
     <td><span class="bx ${RB[r.ei]}">${RE[r.ei]}</span></td>
     <td style="white-space:nowrap">
       ${r.ei<4?`<button class="bic" onclick="openAV(${i})">➡️</button>`:''}
+      <button class="bic" onclick="openEditR(${i})">✏️</button>
       <button class="bic" onclick="sendRWA(${i})">📱</button>
       <button class="bic" onclick="delR(${i})">🗑</button>
     </td>
@@ -1774,9 +1825,9 @@ function renderW(tab){
     el.innerHTML=`<div class="sg" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin-bottom:11px"><div class="sc g"><div class="sl">Ventas hoy</div><div class="sv">${vH.length}</div></div><div class="sc"><div class="sl">CA hoy</div><div class="sv">${fm(tv)}</div></div><div class="sc ${bH>=0?'g':'r'}"><div class="sl">Beneficio hoy</div><div class="sv" style="color:${bH>=0?'var(--gr)':'var(--rd)'}">${bH>=0?'+':''}${fm(bH)}</div></div><div class="sc o"><div class="sl">Reparaciones</div><div class="sv">${rA.length}</div></div></div>${myT.length?`<div class="card"><div class="ch"><h3>📝 Mis tareas pendientes</h3></div><div style="padding:11px">${myT.map(x=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd)"><div class="chk ${x.done?'on':''}" onclick="toggleT(${x.id});renderW('res')">${x.done?'✓':''}</div><div><div style="font-size:.8rem;font-weight:500">${x.tit}</div>${x.desc?`<div style="font-size:.69rem;color:var(--t2)">${x.desc}</div>`:''}</div></div>`).join('')}</div></div>`:''}${vH.length?`<div class="card"><div class="ch"><h3>Ventas de hoy</h3></div><div class="tw"><table><thead><tr><th>Producto</th><th>Cliente</th><th>Precio</th><th>Pago</th></tr></thead><tbody>${vH.map(x=>`<tr><td class="tdm">${x.art}</td><td>${x.cli}</td><td class="mono">${fm(x.prix)}</td><td><span class="bx bb">${x.pay}</span></td></tr>`).join('')}</tbody></table></div></div>`:''}`;
   }
 }
-function wSaveV(){const art=document.getElementById('wvart')?.value.trim();if(!art){toast('¿Producto?','e');return;}const cout=parseFloat(document.getElementById('wvcout')?.value)||0;const prix=parseFloat(document.getElementById('wvprix')?.value)||0;const qty=parseInt(document.getElementById('wvqty')?.value)||1;const serie=document.getElementById('wvserie')?.value.trim()||'';const pay=document.getElementById('wvpay')?.value||'Efectivo';const cat=SC['wcv']?CATS.find(c=>c.id===SC['wcv'])?.l||'Otro':'Otro';const v={id:uid(),ref:'V-'+String(DB.nid-1).padStart(4,'0'),date:today(),art,cat,cli:document.getElementById('wvcli')?.value.trim()||'—',cout,prix,qty,ben:(prix-cout)*qty,pay,serie,notes:document.getElementById('wvnotes')?.value.trim()||''};DB.v.unshift(v);save();['wvart','wvcli','wvcout','wvprix','wvserie','wvnotes'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});const qq=document.getElementById('wvqty');if(qq)qq.value='1';toast('✅ Venta registrada: '+v.ref);renderW('venta');}
-function wSaveA(){const art=document.getElementById('waart')?.value.trim();if(!art){toast('¿Producto?','e');return;}const prix=parseFloat(document.getElementById('waprix')?.value)||0;const cat=SC['wca']?CATS.find(c=>c.id===SC['wca'])?.l||'Otro':'Otro';const a={id:uid(),ref:'A-'+String(DB.nid-1).padStart(4,'0'),date:today(),art,cat,serie:document.getElementById('waserie')?.value.trim()||'',prix,nom:document.getElementById('wanom')?.value.trim()||'',dni:document.getElementById('wdni')?.value.trim()||'',telv:document.getElementById('watel')?.value.trim()||'',etat:document.getElementById('waetat')?.value||'Funciona bien',pv:0,qty:1,notes:document.getElementById('wanotes')?.value.trim()||''};DB.a.unshift(a);if(CFG.autoinv)DB.i.unshift({id:uid(),ref:a.ref,art,cat,serie:a.serie,cout:prix,pv:0,etat:'Disponible',qty:1,date:today()});save();['waart','wanom','wdni','watel','waprix','waserie','wanotes'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});toast('✅ Compra registrada: '+a.ref);renderW('compra');}
-function wSaveR(){const dev=document.getElementById('wrdev')?.value.trim();if(!dev){toast('¿Dispositivo?','e');return;}const cat=SC['wcr']?CATS.find(c=>c.id===SC['wcr'])?.l||'Otro':'Otro';const r={id:uid(),ref:'REP-'+String(DB.nid-1).padStart(4,'0'),date:today(),dev,cat,imei:document.getElementById('wrimei')?.value.trim()||'',cli:document.getElementById('wrcli')?.value.trim()||'—',tel:document.getElementById('wrtel')?.value.trim()||'',cat2:document.getElementById('wrcat')?.value||'Otro',prob:document.getElementById('wrprob')?.value.trim()||'',cout:parseFloat(document.getElementById('wrcout')?.value)||0,liv:document.getElementById('wrdate')?.value||'',notes:'',ei:0,log:[]};DB.r.unshift(r);save();updateB();['wrdev','wrimei','wrcli','wrtel','wrprob','wrcout','wrdate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});toast('✅ Reparación: '+r.ref);renderW('rep');}
+function wSaveV(){const art=document.getElementById('wvart')?.value.trim();if(!art){toast('¿Producto?','e');return;}const cout=parseFloat(document.getElementById('wvcout')?.value)||0;const prix=parseFloat(document.getElementById('wvprix')?.value)||0;const qty=parseInt(document.getElementById('wvqty')?.value)||1;const serie=document.getElementById('wvserie')?.value.trim()||'';const pay=document.getElementById('wvpay')?.value||'Efectivo';const cat=SC['wcv']?CATS.find(c=>c.id===SC['wcv'])?.l||'Otro':'Otro';const vDateVal=document.getElementById('vdate')?.value||today();const vHoraVal=document.getElementById('vhora')?.value||'';const v={id:uid(),ref:'V-'+String(DB.nid-1).padStart(4,'0'),date:vDateVal,hora:vHoraVal,art,cat,cli:document.getElementById('wvcli')?.value.trim()||'—',cout,prix,qty,ben:(prix-cout)*qty,pay,serie,notes:document.getElementById('wvnotes')?.value.trim()||''};DB.v.unshift(v);save();['wvart','wvcli','wvcout','wvprix','wvserie','wvnotes'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});const qq=document.getElementById('wvqty');if(qq)qq.value='1';toast('✅ Venta registrada: '+v.ref);renderW('venta');}
+function wSaveA(){const art=document.getElementById('waart')?.value.trim();if(!art){toast('¿Producto?','e');return;}const prix=parseFloat(document.getElementById('waprix')?.value)||0;const cat=SC['wca']?CATS.find(c=>c.id===SC['wca'])?.l||'Otro':'Otro';const aDateVal=document.getElementById('adate')?.value||today();const aHoraVal=document.getElementById('ahora')?.value||'';const a={id:uid(),ref:'A-'+String(DB.nid-1).padStart(4,'0'),date:aDateVal,hora:aHoraVal,art,cat,serie:document.getElementById('waserie')?.value.trim()||'',prix,nom:document.getElementById('wanom')?.value.trim()||'',dni:document.getElementById('wdni')?.value.trim()||'',telv:document.getElementById('watel')?.value.trim()||'',etat:document.getElementById('waetat')?.value||'Funciona bien',pv:0,qty:1,notes:document.getElementById('wanotes')?.value.trim()||''};DB.a.unshift(a);if(CFG.autoinv)DB.i.unshift({id:uid(),ref:a.ref,art,cat,serie:a.serie,cout:prix,pv:0,etat:'Disponible',qty:1,date:today()});save();['waart','wanom','wdni','watel','waprix','waserie','wanotes'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});toast('✅ Compra registrada: '+a.ref);renderW('compra');}
+function wSaveR(){const dev=document.getElementById('wrdev')?.value.trim();if(!dev){toast('¿Dispositivo?','e');return;}const cat=SC['wcr']?CATS.find(c=>c.id===SC['wcr'])?.l||'Otro':'Otro';const rHoraVal=document.getElementById('rhora')?.value||'';const r={id:uid(),ref:'REP-'+String(DB.nid-1).padStart(4,'0'),date:today(),hora:rHoraVal,dev,cat,imei:document.getElementById('wrimei')?.value.trim()||'',cli:document.getElementById('wrcli')?.value.trim()||'—',tel:document.getElementById('wrtel')?.value.trim()||'',cat2:document.getElementById('wrcat')?.value||'Otro',prob:document.getElementById('wrprob')?.value.trim()||'',cout:parseFloat(document.getElementById('wrcout')?.value)||0,liv:document.getElementById('wrdate')?.value||'',notes:'',ei:0,log:[]};DB.r.unshift(r);save();updateB();['wrdev','wrimei','wrcli','wrtel','wrprob','wrcout','wrdate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});toast('✅ Reparación: '+r.ref);renderW('rep');}
 
 
 // ══ QR SCANNER & GENERATOR ══
@@ -1911,19 +1962,20 @@ function procScan(val){
 function qrQuick(type){
   const imei = document.getElementById('qr-manual')?.value.trim() || '';
   if(type==='venta'){
-    if(imei) document.getElementById('vserie').value = imei;
+    if(imei){ document.getElementById('vserie').value = imei; }
     go('ventas', document.querySelectorAll('#sb .ni')[1]);
     setTimeout(()=>om('mv'), 150);
   } else if(type==='compra'){
-    if(imei) document.getElementById('aserie').value = imei;
+    if(imei){ document.getElementById('aserie').value = imei; }
     go('compras', document.querySelectorAll('#sb .ni')[2]);
     setTimeout(()=>om('ma'), 150);
   } else if(type==='rep'){
-    if(imei) document.getElementById('rimei').value = imei;
+    if(imei){ document.getElementById('rimei').value = imei; }
     go('reps', document.querySelectorAll('#sb .ni')[3]);
     setTimeout(()=>om('mr'), 150);
   }
 }
+
 function quickSell(id){
   const x = DB.i.find(i=>i.id===id);
   if(!x) return;
@@ -2029,6 +2081,225 @@ function quickNewRep(){
   go('reps', document.querySelectorAll('.ni')[4]);
   om('mr');
 }
+
+
+// ══ EDIT FUNCTIONS ══
+
+// ─ EDIT VENTA ─
+function openEditV(i){
+  const v = DB.v[i];
+  document.getElementById('ev-id').value = i;
+  document.getElementById('ev-art').value = v.art||'';
+  document.getElementById('ev-cli').value = v.cli||'';
+  document.getElementById('ev-pay').value = v.pay||'Efectivo';
+  document.getElementById('ev-cout').value = v.cout||0;
+  document.getElementById('ev-prix').value = v.prix||0;
+  document.getElementById('ev-serie').value = v.serie||'';
+  document.getElementById('ev-qty').value = v.qty||1;
+  document.getElementById('ev-date').value = v.date||today();
+  document.getElementById('ev-hora').value = v.hora||'';
+  document.getElementById('ev-notes').value = v.notes||'';
+  // Set category
+  buildCats();
+  setTimeout(()=>{
+    const cat = CATS.find(c=>c.l===v.cat);
+    if(cat){
+      const btn = document.querySelector('#cev .cat:nth-child('+( CATS.indexOf(cat)+1 )+')');
+      if(btn){ btn.classList.add('on'); SC['cev']=cat.id; }
+    }
+  },100);
+  om('meditv');
+}
+function updateV(){
+  const i = parseInt(document.getElementById('ev-id').value);
+  const v = DB.v[i]; if(!v) return;
+  v.art = document.getElementById('ev-art').value.trim()||v.art;
+  v.cli = document.getElementById('ev-cli').value.trim()||'—';
+  v.pay = document.getElementById('ev-pay').value;
+  v.cout = parseFloat(document.getElementById('ev-cout').value)||0;
+  v.prix = parseFloat(document.getElementById('ev-prix').value)||0;
+  v.qty = parseInt(document.getElementById('ev-qty').value)||1;
+  v.serie = document.getElementById('ev-serie').value.trim();
+  v.date = document.getElementById('ev-date').value||v.date;
+  v.hora = document.getElementById('ev-hora').value||'';
+  v.notes = document.getElementById('ev-notes').value.trim();
+  v.ben = (v.prix - v.cout) * v.qty;
+  if(SC['cev']) v.cat = getCat('cev');
+  save(); cm('meditv'); renderV();
+  toast('✅ Venta actualizada');
+}
+
+// ─ EDIT COMPRA ─
+function openEditA(i){
+  const a = DB.a[i];
+  document.getElementById('ea-id').value = i;
+  document.getElementById('ea-art').value = a.art||'';
+  document.getElementById('ea-nom').value = a.nom||'';
+  document.getElementById('ea-dni').value = a.dni||'';
+  document.getElementById('ea-tel').value = a.telv||'';
+  document.getElementById('ea-prix').value = a.prix||0;
+  document.getElementById('ea-pv').value = a.pv||0;
+  document.getElementById('ea-etat').value = a.etat||'Funciona bien';
+  document.getElementById('ea-serie').value = a.serie||'';
+  document.getElementById('ea-qty').value = a.qty||1;
+  document.getElementById('ea-date').value = a.date||today();
+  document.getElementById('ea-hora').value = a.hora||'';
+  document.getElementById('ea-notes').value = a.notes||'';
+  buildCats();
+  setTimeout(()=>{
+    const cat = CATS.find(c=>c.l===a.cat);
+    if(cat){
+      const btn = document.querySelector('#cea .cat:nth-child('+(CATS.indexOf(cat)+1)+')');
+      if(btn){ btn.classList.add('on'); SC['cea']=cat.id; }
+    }
+  },100);
+  om('medita');
+}
+function updateA(){
+  const i = parseInt(document.getElementById('ea-id').value);
+  const a = DB.a[i]; if(!a) return;
+  a.art = document.getElementById('ea-art').value.trim()||a.art;
+  a.nom = document.getElementById('ea-nom').value.trim();
+  a.dni = document.getElementById('ea-dni').value.trim();
+  a.telv = document.getElementById('ea-tel').value.trim();
+  a.prix = parseFloat(document.getElementById('ea-prix').value)||0;
+  a.pv = parseFloat(document.getElementById('ea-pv').value)||0;
+  a.etat = document.getElementById('ea-etat').value;
+  a.serie = document.getElementById('ea-serie').value.trim();
+  a.qty = parseInt(document.getElementById('ea-qty').value)||1;
+  a.date = document.getElementById('ea-date').value||a.date;
+  a.hora = document.getElementById('ea-hora').value||'';
+  a.notes = document.getElementById('ea-notes').value.trim();
+  if(SC['cea']) a.cat = getCat('cea');
+  save(); cm('medita'); renderA();
+  toast('✅ Compra actualizada');
+}
+
+// ─ EDIT REPARACION ─
+function openEditR(i){
+  const r = DB.r[i];
+  document.getElementById('er-id').value = i;
+  document.getElementById('er-dev').value = r.dev||'';
+  document.getElementById('er-imei').value = r.imei||'';
+  document.getElementById('er-cli').value = r.cli||'';
+  document.getElementById('er-tel').value = r.tel||'';
+  document.getElementById('er-cat').value = r.cat2||'Otro';
+  document.getElementById('er-prob').value = r.prob||'';
+  document.getElementById('er-cout').value = r.cout||0;
+  document.getElementById('er-livr').value = r.liv||'';
+  document.getElementById('er-date').value = r.date||today();
+  document.getElementById('er-hora').value = r.hora||'';
+  document.getElementById('er-notes').value = r.notes||'';
+  buildCats();
+  setTimeout(()=>{
+    const cat = CATS.find(c=>c.l===r.cat);
+    if(cat){
+      const btn = document.querySelector('#cer .cat:nth-child('+(CATS.indexOf(cat)+1)+')');
+      if(btn){ btn.classList.add('on'); SC['cer']=cat.id; }
+    }
+  },100);
+  om('meditr');
+}
+function updateR(){
+  const i = parseInt(document.getElementById('er-id').value);
+  const r = DB.r[i]; if(!r) return;
+  r.dev = document.getElementById('er-dev').value.trim()||r.dev;
+  r.imei = document.getElementById('er-imei').value.trim();
+  r.cli = document.getElementById('er-cli').value.trim()||'—';
+  r.tel = document.getElementById('er-tel').value.trim();
+  r.cat2 = document.getElementById('er-cat').value;
+  r.prob = document.getElementById('er-prob').value.trim();
+  r.cout = parseFloat(document.getElementById('er-cout').value)||0;
+  r.liv = document.getElementById('er-livr').value;
+  r.date = document.getElementById('er-date').value||r.date;
+  r.hora = document.getElementById('er-hora').value||'';
+  r.notes = document.getElementById('er-notes').value.trim();
+  if(SC['cer']) r.cat = getCat('cer');
+  save(); cm('meditr'); renderR(); updateB();
+  toast('✅ Reparación actualizada');
+}
+
+// ── FIX QR SCANNER ──
+// Better procScan that works reliably
+function procScan(val){
+  if(!val || !val.trim()){ toast('Introduce un código primero','e'); return; }
+  val = val.trim();
+  const actEl = document.getElementById('scan-action');
+  const resEl = document.getElementById('scan-res');
+  if(resEl) resEl.innerHTML = '<b>✅ Código:</b> ' + val.slice(0,50);
+
+  // Search in inventory (IMEI or product name)
+  const clean = val.replace(/[^0-9]/g,'');
+  const inv = DB.i.find(x=>(x.serie && x.serie===val) || (clean.length>=8 && x.serie===clean) || x.art.toLowerCase()===val.toLowerCase());
+  const rep = DB.r.find(x=> x.imei===val || (clean.length>=8 && x.imei===clean));
+  const parts = val.split('|');
+
+  if(inv){
+    if(actEl) actEl.innerHTML = `<div style="padding:10px;background:rgba(34,212,143,.1);border:1px solid var(--gr);border-radius:var(--r);margin-top:8px">
+      <div style="color:var(--gr);font-weight:700;margin-bottom:5px">📦 Encontrado en inventario</div>
+      <div style="font-size:.85rem;font-weight:600">${inv.art}</div>
+      <div style="font-size:.75rem;color:var(--t2)">${inv.cat} · ${inv.etat} · ${fm(inv.pv)}</div>
+      ${inv.serie?'<div style="font-size:.72rem;color:var(--t2);font-family:monospace">S/N: '+inv.serie+'</div>':''}
+      <div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">
+        <button class="btn b-ac bsm" onclick="quickSell(${inv.id})">💰 Vender</button>
+        <button class="btn b-gh bsm" onclick="document.getElementById('qg-txt').value='${inv.art}|${inv.serie||''}|${fm(inv.pv)}';genQR()">📱 Generar QR</button>
+      </div>
+    </div>`;
+  } else if(rep){
+    if(actEl) actEl.innerHTML = `<div style="padding:10px;background:rgba(79,142,247,.1);border:1px solid var(--ac);border-radius:var(--r);margin-top:8px">
+      <div style="color:var(--ac);font-weight:700;margin-bottom:4px">🔧 Reparación encontrada</div>
+      <div style="font-size:.85rem;font-weight:600">${rep.dev} — ${rep.cli}</div>
+      <div style="margin-top:5px"><span class="bx ${RB[rep.ei]}">${RE[rep.ei]}</span> · 💰 ${fm(rep.cout)}</div>
+      <div style="font-size:.72rem;color:var(--t2);margin-top:3px">Ref: ${rep.ref} · ${fd(rep.date)}</div>
+    </div>`;
+  } else if(parts.length >= 2){
+    // QR generated by our app (format: art|serie|price)
+    if(actEl) actEl.innerHTML = `<div style="padding:10px;background:var(--s2);border-radius:var(--r);margin-top:8px">
+      <div style="font-weight:700;margin-bottom:6px;font-size:.85rem">📱 Código QR del sistema</div>
+      ${parts.map((p,i)=>`<div style="font-size:.78rem;color:var(--t2);padding:2px 0">${['🏷️','📟','💰'][i]||'•'} ${p}</div>`).join('')}
+      <div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">
+        <button class="btn b-or bsm" onclick="prefillCompra('${val.replace(/'/g,'')}')">🛒 Registrar compra</button>
+        <button class="btn b-ac bsm" onclick="prefillVenta('${parts[0].replace(/'/g,'')}','${parts[1].replace(/'/g,'')}')">💰 Vender</button>
+        <button class="btn b-gh bsm" onclick="prefillRep('${parts[1].replace(/'/g,'')}')">🔧 Reparación</button>
+      </div>
+    </div>`;
+  } else {
+    if(actEl) actEl.innerHTML = `<div style="padding:10px;background:var(--s2);border-radius:var(--r);margin-top:8px">
+      <div style="font-weight:700;margin-bottom:5px;font-size:.85rem">📱 Código escaneado</div>
+      <div style="font-size:.8rem;color:var(--t2);font-family:monospace;word-break:break-all">${val}</div>
+      <div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap">
+        <button class="btn b-or bsm" onclick="prefillCompra('${val.replace(/'/g,'')}')">🛒 Compra</button>
+        <button class="btn b-gr bsm" onclick="prefillRep('${val.replace(/'/g,'')}')">🔧 Reparación</button>
+        <button class="btn b-gh bsm" onclick="document.getElementById('qg-txt').value='${val.replace(/'/g,'')}';genQR()">📱 Generar QR</button>
+      </div>
+    </div>`;
+  }
+  // Clear manual input
+  const inp = document.getElementById('qr-manual');
+  if(inp) inp.value = '';
+  toast('✅ Procesado','s');
+}
+
+// Prefill venta from QR
+function prefillVenta(art, serie){
+  document.getElementById('vart').value = art||'';
+  document.getElementById('vserie').value = serie||'';
+  // Search inventory
+  const inv = DB.i.find(x=>x.art===art||x.serie===serie);
+  if(inv){
+    document.getElementById('vcout').value = inv.cout||'';
+    document.getElementById('vprix').value = inv.pv||'';
+  }
+  prevB();
+  go('ventas', document.querySelector('.ni:nth-child(3)'));
+  setTimeout(()=>om('mv'), 200);
+}
+
+// Date field in venta/compra forms (add to existing forms)
+function setFormDate(inputId){
+  document.getElementById(inputId).value = today();
+}
+
 
 
 
