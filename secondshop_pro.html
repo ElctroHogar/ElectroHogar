@@ -160,13 +160,71 @@ select option{background:var(--s1)}
 #toast.w{background:var(--or);color:#0d0f18}
 /* PRINT */
 @media print{
-  body>*{display:none!important}
-  .ov.on{display:block!important;position:fixed!important;inset:0!important;background:#fff!important;padding:0!important;overflow:auto!important}
-  .ov.on .modal{max-width:100%!important;max-height:none!important;border:none!important;background:#fff!important;padding:0!important;border-radius:0!important}
-  .ov.on .mh,.ov.on .ma{display:none!important}
-  .ov.on #ps1{display:none!important}
-  .ov.on #ps2{display:block!important}
-  #pdoc,#cdoc{display:block!important;color:#111!important;background:#fff!important}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;margin:0;padding:0}
+  #login,#app,#sb,#topbar,#bnav,#mmenu,#wov,
+  .ov:not(.on),#toast,#btn-install,
+  .mh,.ma,#pma1,#pma2,#ps1{display:none!important}
+  .ov.on{
+    position:static!important;background:none!important;
+    padding:0!important;display:block!important;
+    width:100%!important;height:auto!important
+  }
+  .modal{
+    box-shadow:none!important;border:none!important;
+    max-width:100%!important;max-height:none!important;
+    overflow:visible!important;padding:0!important;
+    background:none!important;width:100%!important
+  }
+  #ps2{display:block!important}
+  /* ── A4 Albarán ── */
+  .alb{
+    width:210mm!important;min-height:280mm!important;
+    padding:18mm 15mm!important;margin:0 auto!important;
+    box-sizing:border-box!important;font-family:Arial,sans-serif!important;
+    font-size:11pt!important;color:#000!important;background:#fff!important
+  }
+  .alb-h{
+    display:flex!important;justify-content:space-between!important;
+    align-items:flex-start!important;margin-bottom:16px!important;
+    border-bottom:2px solid #333!important;padding-bottom:12px!important
+  }
+  .alb-title{font-size:22pt!important;font-weight:900!important;color:#333!important}
+  .alb table{width:100%!important;border-collapse:collapse!important;margin:12px 0!important}
+  .alb th{background:#333!important;color:#fff!important;padding:8px 10px!important;font-size:10pt!important;text-align:left!important}
+  .alb td{padding:8px 10px!important;border-bottom:1px solid #ddd!important;font-size:10pt!important}
+  .alb-sign{display:flex!important;justify-content:space-between!important;margin-top:30mm!important}
+  .alb-sb{height:20mm!important;border-bottom:1px solid #333!important;width:100%!important;margin-bottom:6px!important}
+  /* ── A4 Factura ── */
+  .pdoc{
+    width:210mm!important;min-height:280mm!important;
+    padding:18mm 15mm!important;margin:0 auto!important;
+    box-sizing:border-box!important;font-family:Arial,sans-serif!important;
+    color:#000!important;background:#fff!important
+  }
+  .pdoc-h{display:flex!important;justify-content:space-between!important;margin-bottom:20px!important}
+  .pdoc-shop{font-size:16pt!important;font-weight:900!important}
+  .pdoc-type{font-size:20pt!important;font-weight:900!important;color:#333!important}
+  .pdoc table{width:100%!important;border-collapse:collapse!important}
+  .pdoc th{background:#333!important;color:#fff!important;padding:8px!important}
+  .pdoc td{padding:8px!important;border-bottom:1px solid #eee!important}
+  /* ── Ticket 80mm ── */
+  .tkt{
+    width:72mm!important;margin:0 auto!important;
+    padding:4mm!important;font-family:monospace!important;
+    font-size:9pt!important;color:#000!important;background:#fff!important
+  }
+  .tkt-ln{border-top:1px dashed #000!important;margin:4px 0!important}
+  .tkt-r{display:flex!important;justify-content:space-between!important}
+  .tkt-c{text-align:center!important}
+  .tkt-b{font-weight:700!important}
+  /* ── Documento compra ── */
+  .cdoc{
+    width:210mm!important;padding:18mm 15mm!important;
+    margin:0 auto!important;font-family:Arial,sans-serif!important;
+    color:#000!important;background:#fff!important
+  }
+  @page{size:A4 portrait;margin:10mm}
 }
 /* PRINT DOCS */
 .pdoc{font-family:Arial,sans-serif;font-size:12px;color:#111;background:#fff;padding:20px}
@@ -1233,8 +1291,8 @@ function chooseRole(r){
   role=r;
   document.getElementById('step1').style.display='none';
   document.getElementById('step2').style.display='block';
-  document.getElementById('role-lbl').innerHTML=r==='owner'?'<b>👑 Propietario</b> — PIN: '+CFG.pin:'<b>🧑‍💼 Empleado</b> — PIN: '+CFG.wpin;
-  document.getElementById('phint').textContent=r==='owner'?'PIN propietario por defecto: 1234':'PIN empleado por defecto: 0000';
+  document.getElementById('role-lbl').innerHTML=r==='owner'?'<b>👑 Propietario</b>':'<b>🧑‍💼 Empleado</b>';
+  document.getElementById('phint').textContent=r==='owner'?'Introduce tu PIN de propietario':'Introduce tu PIN de empleado';
   pinStr='';
   const f=document.getElementById('pinf');f.value='';updD();
   setTimeout(()=>f.focus(),200);
@@ -1251,7 +1309,7 @@ function dopin(){
   const correct=role==='owner'?(CFG.pin||'1234'):(CFG.wpin||'0000');
   if(entered===correct){doLogin();}
   else{
-    document.getElementById('perr').textContent='❌ PIN incorrecto (correcto: '+correct+')';
+    document.getElementById('perr').textContent='❌ PIN incorrecto — inténtalo de nuevo';
     pinStr='';f.value='';updD();
     setTimeout(()=>document.getElementById('perr').textContent='',3000);
   }
@@ -1548,7 +1606,16 @@ function buildDoc(type,v){
 }
 function doPrint(){
   document.querySelectorAll('.ov.on').forEach(o=>{if(o.id!=='mprint')o.classList.remove('on');});
-  window.print();
+  // Set page size based on document type
+  const styleEl = document.getElementById('print-size-style') || document.createElement('style');
+  styleEl.id = 'print-size-style';
+  if(docType==='t'||docType==='ts'){
+    styleEl.textContent = '@page{size:80mm 200mm;margin:0}';
+  } else {
+    styleEl.textContent = '@page{size:A4 portrait;margin:0}';
+  }
+  document.head.appendChild(styleEl);
+  setTimeout(()=>window.print(), 200);
 }
 function doPrintC(){window.print();}
 function sendWA(){const v=printV;if(!v)return;const cl=DB.c.find(x=>x.nom===v.cli);const tel=(cl?.tel||'').replace(/\D/g,'').replace(/^0/,'+34');const msg=`🧾 Factura ${v.ref}\n━━━\n🏪 ${CFG.shop}\n📦 ${v.art}\n💰 ${fm(v.prix*(v.qty||1))}\n💳 ${v.pay}\n📅 ${fd(v.date)}\n━━━\n¡Gracias! 🙏`;window.open(tel?`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');toast('📱 WhatsApp','i');}

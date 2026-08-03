@@ -14,7 +14,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-:root{--bg:#0d0f18;--s1:#141720;--s2:#1c2030;--s3:#242840;--bd:#2a2f45;--ac:#4f8ef7;--acd:#3a7ae0;--gr:#22d48f;--rd:#f7506a;--or:#f7923a;--pu:#a855f7;--ye:#f7b731;--cy:#22d4d4;--tx:#e4e8f5;--t2:#8b92b3;--t3:#5a6080;--r:10px;--r2:7px;--sw:0px}
+:root{--bg:#0d0f18;--s1:#141720;--s2:#1c2030;--s3:#242840;--bd:#2a2f45;--ac:#4f8ef7;--acd:#3a7ae0;--gr:#22d48f;--rd:#f7506a;--or:#f7923a;--pu:#a855f7;--ye:#f7b731;--cy:#22d4d4;--tx:#e4e8f5;--t2:#8b92b3;--t3:#5a6080;--r:10px;--r2:7px;--sw:225px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
 /* LOGIN */
@@ -53,7 +53,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 #app{display:none;min-height:100vh}
 #app.on{display:flex}
 /* SIDEBAR */
-#sb{display:none!important}
+#sb{width:var(--sw);min-height:100vh;background:var(--s1);border-right:1px solid var(--bd);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:50}
 .sb-logo{padding:13px;border-bottom:1px solid var(--bd)}
 .sb-logo .nm{font-size:.95rem;font-weight:900}.nm .a{color:var(--ac)}
 .sb-logo .sub{font-size:.56rem;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
@@ -69,7 +69,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .sdot{width:8px;height:8px;border-radius:50%;background:var(--bd);display:inline-block;transition:background .5s;margin-right:4px}
 .sdot.ok{background:var(--gr)}
 /* MAIN */
-#main{margin-left:0!important;flex:1;display:flex;flex-direction:column;min-height:100vh;padding-bottom:68px}
+#main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
 #topbar{background:var(--s1);border-bottom:1px solid var(--bd);height:48px;display:flex;align-items:center;padding:0 15px;gap:8px;position:sticky;top:0;z-index:40}
 .tt{font-weight:700;font-size:.88rem;flex:1}
 #content{padding:16px;flex:1}
@@ -160,13 +160,71 @@ select option{background:var(--s1)}
 #toast.w{background:var(--or);color:#0d0f18}
 /* PRINT */
 @media print{
-  body>*{display:none!important}
-  .ov.on{display:block!important;position:fixed!important;inset:0!important;background:#fff!important;padding:0!important;overflow:auto!important}
-  .ov.on .modal{max-width:100%!important;max-height:none!important;border:none!important;background:#fff!important;padding:0!important;border-radius:0!important}
-  .ov.on .mh,.ov.on .ma{display:none!important}
-  .ov.on #ps1{display:none!important}
-  .ov.on #ps2{display:block!important}
-  #pdoc,#cdoc{display:block!important;color:#111!important;background:#fff!important}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;margin:0;padding:0}
+  #login,#app,#sb,#topbar,#bnav,#mmenu,#wov,
+  .ov:not(.on),#toast,#btn-install,
+  .mh,.ma,#pma1,#pma2,#ps1{display:none!important}
+  .ov.on{
+    position:static!important;background:none!important;
+    padding:0!important;display:block!important;
+    width:100%!important;height:auto!important
+  }
+  .modal{
+    box-shadow:none!important;border:none!important;
+    max-width:100%!important;max-height:none!important;
+    overflow:visible!important;padding:0!important;
+    background:none!important;width:100%!important
+  }
+  #ps2{display:block!important}
+  /* ── A4 Albarán ── */
+  .alb{
+    width:210mm!important;min-height:280mm!important;
+    padding:18mm 15mm!important;margin:0 auto!important;
+    box-sizing:border-box!important;font-family:Arial,sans-serif!important;
+    font-size:11pt!important;color:#000!important;background:#fff!important
+  }
+  .alb-h{
+    display:flex!important;justify-content:space-between!important;
+    align-items:flex-start!important;margin-bottom:16px!important;
+    border-bottom:2px solid #333!important;padding-bottom:12px!important
+  }
+  .alb-title{font-size:22pt!important;font-weight:900!important;color:#333!important}
+  .alb table{width:100%!important;border-collapse:collapse!important;margin:12px 0!important}
+  .alb th{background:#333!important;color:#fff!important;padding:8px 10px!important;font-size:10pt!important;text-align:left!important}
+  .alb td{padding:8px 10px!important;border-bottom:1px solid #ddd!important;font-size:10pt!important}
+  .alb-sign{display:flex!important;justify-content:space-between!important;margin-top:30mm!important}
+  .alb-sb{height:20mm!important;border-bottom:1px solid #333!important;width:100%!important;margin-bottom:6px!important}
+  /* ── A4 Factura ── */
+  .pdoc{
+    width:210mm!important;min-height:280mm!important;
+    padding:18mm 15mm!important;margin:0 auto!important;
+    box-sizing:border-box!important;font-family:Arial,sans-serif!important;
+    color:#000!important;background:#fff!important
+  }
+  .pdoc-h{display:flex!important;justify-content:space-between!important;margin-bottom:20px!important}
+  .pdoc-shop{font-size:16pt!important;font-weight:900!important}
+  .pdoc-type{font-size:20pt!important;font-weight:900!important;color:#333!important}
+  .pdoc table{width:100%!important;border-collapse:collapse!important}
+  .pdoc th{background:#333!important;color:#fff!important;padding:8px!important}
+  .pdoc td{padding:8px!important;border-bottom:1px solid #eee!important}
+  /* ── Ticket 80mm ── */
+  .tkt{
+    width:72mm!important;margin:0 auto!important;
+    padding:4mm!important;font-family:monospace!important;
+    font-size:9pt!important;color:#000!important;background:#fff!important
+  }
+  .tkt-ln{border-top:1px dashed #000!important;margin:4px 0!important}
+  .tkt-r{display:flex!important;justify-content:space-between!important}
+  .tkt-c{text-align:center!important}
+  .tkt-b{font-weight:700!important}
+  /* ── Documento compra ── */
+  .cdoc{
+    width:210mm!important;padding:18mm 15mm!important;
+    margin:0 auto!important;font-family:Arial,sans-serif!important;
+    color:#000!important;background:#fff!important
+  }
+  @page{size:A4 portrait;margin:10mm}
 }
 /* PRINT DOCS */
 .pdoc{font-family:Arial,sans-serif;font-size:12px;color:#111;background:#fff;padding:20px}
@@ -243,38 +301,7 @@ select option{background:var(--s1)}
 .db-st{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:6px;margin-bottom:10px}
 .dsm{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2);padding:8px;text-align:center}
 .dsm-v{font-size:1.05rem;font-weight:700;font-family:monospace;color:var(--ac)}.dsm-l{font-size:.61rem;color:var(--t2)}
-::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-thumb{background:#353c58;border-radius:3px}
-#bnav{position:fixed;bottom:0;left:0;right:0;height:62px;background:var(--s1);border-top:1px solid var(--bd);display:flex;align-items:center;z-index:100;padding:0 2px;gap:2px}
-.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 1px;cursor:pointer;border-radius:8px;color:var(--t2);font-size:.5rem;font-weight:600;border:none;background:none;min-height:54px;position:relative}
-.bn:active{background:var(--s2)}.bn.on{color:var(--ac)}
-.bn .bni{font-size:1.35rem;display:block;line-height:1.1}
-.bn .b2{position:absolute;top:3px;right:6px;background:var(--rd);color:#fff;border-radius:10px;padding:0 4px;font-size:.48rem;font-weight:700;min-width:13px;text-align:center}
-#mmenu{position:fixed;bottom:62px;left:0;right:0;background:var(--s1);border-top:1px solid var(--bd);z-index:99;display:none;padding:10px;animation:slideUp .2s ease}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-#mmenu.on{display:block}
-.mmg{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.mmi{display:flex;flex-direction:column;align-items:center;gap:3px;padding:11px 4px;background:var(--s2);border-radius:var(--r);cursor:pointer;font-size:.63rem;font-weight:600;color:var(--t2);border:1px solid var(--bd)}
-.mmi:active{background:rgba(79,142,247,.15);color:var(--ac);border-color:var(--ac)}
-.mmi span{font-size:1.5rem}
-#topbar{height:52px;padding:0 12px}
-#content{padding:11px}
-.btn{padding:10px 13px;font-size:.83rem}
-.bsm{padding:8px 11px}
-.bic{padding:8px 10px;font-size:.82rem;min-width:36px;text-align:center}
-input,select,textarea{padding:10px 11px;font-size:16px!important}
-label{font-size:.78rem}
-table{font-size:.76rem}
-th{padding:7px 9px;font-size:.62rem}
-td{padding:9px 8px}
-.ph h2{font-size:.95rem}
-.sv{font-size:1.35rem}
-.dg{grid-template-columns:1fr!important}
-.sg{grid-template-columns:repeat(2,1fr)!important}
-.cats{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
-.cat{min-height:68px}.cat .ci{font-size:1.55rem}
-.ov.on{align-items:flex-end!important;padding:0!important}
-.ov.on .modal{max-width:100%!important;border-radius:14px 14px 0 0!important;max-height:92vh!important}
-*{-webkit-tap-highlight-color:rgba(79,142,247,.15);touch-action:manipulation}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#353c58;border-radius:3px}
 </style>
 </head>
 <body>
@@ -1287,8 +1314,8 @@ function chooseRole(r){
   role=r;
   document.getElementById('step1').style.display='none';
   document.getElementById('step2').style.display='block';
-  document.getElementById('role-lbl').innerHTML=r==='owner'?'<b>👑 Propietario</b> — PIN: '+CFG.pin:'<b>🧑‍💼 Empleado</b> — PIN: '+CFG.wpin;
-  document.getElementById('phint').textContent=r==='owner'?'PIN propietario por defecto: 1234':'PIN empleado por defecto: 0000';
+  document.getElementById('role-lbl').innerHTML=r==='owner'?'<b>👑 Propietario</b>':'<b>🧑‍💼 Empleado</b>';
+  document.getElementById('phint').textContent=r==='owner'?'Introduce tu PIN de propietario':'Introduce tu PIN de empleado';
   pinStr='';
   const f=document.getElementById('pinf');f.value='';updD();
   setTimeout(()=>f.focus(),200);
@@ -1305,7 +1332,7 @@ function dopin(){
   const correct=role==='owner'?(CFG.pin||'1234'):(CFG.wpin||'0000');
   if(entered===correct){doLogin();}
   else{
-    document.getElementById('perr').textContent='❌ PIN incorrecto (correcto: '+correct+')';
+    document.getElementById('perr').textContent='❌ PIN incorrecto — inténtalo de nuevo';
     pinStr='';f.value='';updD();
     setTimeout(()=>document.getElementById('perr').textContent='',3000);
   }
@@ -1602,7 +1629,16 @@ function buildDoc(type,v){
 }
 function doPrint(){
   document.querySelectorAll('.ov.on').forEach(o=>{if(o.id!=='mprint')o.classList.remove('on');});
-  window.print();
+  // Set page size based on document type
+  const styleEl = document.getElementById('print-size-style') || document.createElement('style');
+  styleEl.id = 'print-size-style';
+  if(docType==='t'||docType==='ts'){
+    styleEl.textContent = '@page{size:80mm 200mm;margin:0}';
+  } else {
+    styleEl.textContent = '@page{size:A4 portrait;margin:0}';
+  }
+  document.head.appendChild(styleEl);
+  setTimeout(()=>window.print(), 200);
 }
 function doPrintC(){window.print();}
 function sendWA(){const v=printV;if(!v)return;const cl=DB.c.find(x=>x.nom===v.cli);const tel=(cl?.tel||'').replace(/\D/g,'').replace(/^0/,'+34');const msg=`🧾 Factura ${v.ref}\n━━━\n🏪 ${CFG.shop}\n📦 ${v.art}\n💰 ${fm(v.prix*(v.qty||1))}\n💳 ${v.pay}\n📅 ${fd(v.date)}\n━━━\n¡Gracias! 🙏`;window.open(tel?`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`:`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');toast('📱 WhatsApp','i');}
