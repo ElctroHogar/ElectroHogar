@@ -9,308 +9,19 @@
 <meta name="theme-color" content="#4f8ef7">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d0f18'/><text y='62' x='50' text-anchor='middle' font-size='60'>⚡</text></svg>">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Electro Hogar — Móvil</title>
+<title>SecondShop PRO</title>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<style>
-:root{--bg:#0d0f18;--s1:#141720;--s2:#1c2030;--s3:#242840;--bd:#2a2f45;--ac:#4f8ef7;--acd:#3a7ae0;--gr:#22d48f;--rd:#f7506a;--or:#f7923a;--pu:#a855f7;--ye:#f7b731;--cy:#22d4d4;--tx:#e4e8f5;--t2:#8b92b3;--t3:#5a6080;--r:10px;--r2:7px;--sw:225px}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
-/* LOGIN */
-#login{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center}
-#login.off{display:none}
-.lbox{width:100%;max-width:360px;padding:24px;text-align:center}
-.llogo{font-size:1.6rem;font-weight:900;color:var(--ac);margin-bottom:4px}
-.lsub{font-size:.8rem;color:var(--t2);margin-bottom:24px}
-/* ROLE CARDS */
-.roles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0}
-.role-card{background:var(--s1);border:2px solid var(--bd);border-radius:14px;padding:24px 12px;cursor:pointer;transition:all .2s;user-select:none}
-.role-card:hover,.role-card:active{border-color:var(--ac);background:var(--s2)}
-.role-ic{font-size:2.6rem;display:block;margin-bottom:8px}
-.role-nm{font-weight:800;font-size:.95rem}
-.role-sb{font-size:.68rem;color:var(--t2);margin-top:3px}
-/* PIN BOX */
-#pinbox{display:none;margin-top:0}
-.pin-who{font-size:.85rem;color:var(--t2);margin-bottom:14px}
-.pin-who b{color:var(--tx)}
-.dots{display:flex;gap:12px;justify-content:center;margin-bottom:10px}
-.dot{width:14px;height:14px;border-radius:50%;background:var(--bd);transition:background .2s}
-.dot.on{background:var(--ac)}
-.pin-err{color:var(--rd);font-size:.76rem;min-height:18px;margin-bottom:6px}
-.pin-inp{width:160px;text-align:center;font-size:1.8rem;letter-spacing:10px;padding:10px;border-radius:10px;border:2px solid var(--bd);background:var(--s2);color:var(--tx);outline:none;margin-bottom:6px}
-.pin-inp:focus{border-color:var(--ac)}
-.hint{font-size:.67rem;color:var(--t3);margin-bottom:12px}
-.pad{display:grid;grid-template-columns:repeat(3,60px);gap:8px;justify-content:center;margin-bottom:12px}
-.pb{width:60px;height:60px;border-radius:50%;background:var(--s2);border:1px solid var(--bd);color:var(--tx);font-size:1.2rem;font-weight:700;cursor:pointer;transition:all .15s}
-.pb:hover,.pb:active{background:var(--s3);border-color:var(--ac)}
-.pb.ok{background:var(--ac);color:#fff}
-.pin-btns{display:flex;gap:8px;justify-content:center}
-.lbtn{padding:8px 16px;border-radius:20px;border:1px solid var(--bd);background:var(--s2);color:var(--t2);font-size:.76rem;cursor:pointer}
-.lbtn:hover{border-color:var(--ac);color:var(--ac)}
-.lbtn.main{background:var(--ac);color:#fff;border-color:var(--ac)}
-/* APP */
-#app{display:none;min-height:100vh}
-#app.on{display:flex}
-/* SIDEBAR */
-#sb{width:var(--sw);min-height:100vh;background:var(--s1);border-right:1px solid var(--bd);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:50}
-.sb-logo{padding:13px;border-bottom:1px solid var(--bd)}
-.sb-logo .nm{font-size:.95rem;font-weight:900}.nm .a{color:var(--ac)}
-.sb-logo .sub{font-size:.56rem;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
-.sb-logo .shop{font-size:.74rem;font-weight:600;margin-top:5px;padding-top:5px;border-top:1px solid var(--bd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sec{padding:9px 10px 2px;font-size:.56rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:700}
-.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;margin:1px 5px;border-radius:var(--r2);cursor:pointer;font-size:.78rem;font-weight:500;color:var(--t2);transition:all .15s;user-select:none}
-.ni:hover{background:var(--s2);color:var(--tx)}
-.ni.on{background:rgba(79,142,247,.15);color:var(--ac);border:1px solid rgba(79,142,247,.2)}
-.ni .ic{width:16px;text-align:center;font-size:.85rem;flex-shrink:0}
-.badge{margin-left:auto;background:var(--rd);color:#fff;border-radius:20px;padding:1px 6px;font-size:.59rem;font-weight:700;flex-shrink:0}
-.sb-bot{margin-top:auto;padding:8px 7px;border-top:1px solid var(--bd)}
-/* SAVE DOT */
-.sdot{width:8px;height:8px;border-radius:50%;background:var(--bd);display:inline-block;transition:background .5s;margin-right:4px}
-.sdot.ok{background:var(--gr)}
-/* MAIN */
-#main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
-#topbar{background:var(--s1);border-bottom:1px solid var(--bd);height:48px;display:flex;align-items:center;padding:0 15px;gap:8px;position:sticky;top:0;z-index:40}
-.tt{font-weight:700;font-size:.88rem;flex:1}
-#content{padding:16px;flex:1}
-/* PAGES */
-.pg{display:none}.pg.on{display:block}
-.ph{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.ph h2{font-size:1rem;font-weight:700;flex:1}
-/* STATS GRID */
-.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin-bottom:14px}
-.sc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px;position:relative;overflow:hidden}
-.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac)}
-.sc.g::before{background:var(--gr)}.sc.r::before{background:var(--rd)}.sc.o::before{background:var(--or)}.sc.p::before{background:var(--pu)}.sc.y::before{background:var(--ye)}
-.sl{font-size:.6rem;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;font-weight:600}
-.sv{font-size:1.25rem;font-weight:800;font-family:monospace;color:var(--ac)}
-.sc.g .sv{color:var(--gr)}.sc.r .sv{color:var(--rd)}.sc.o .sv{color:var(--or)}.sc.p .sv{color:var(--pu)}.sc.y .sv{color:var(--ye)}
-.ss{font-size:.65rem;color:var(--t2);margin-top:2px}
-/* CARD */
-.card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:11px}
-.ch{padding:9px 13px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:8px}
-.ch h3{font-size:.8rem;font-weight:600}
-.dg{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-/* TABLE */
-.tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:.75rem}
-th{padding:6px 9px;text-align:left;color:var(--t2);font-size:.59rem;font-weight:700;text-transform:uppercase;border-bottom:1px solid var(--bd);background:var(--s2);white-space:nowrap}
-td{padding:7px 9px;border-bottom:1px solid var(--bd);vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:rgba(255,255,255,.015)}
-.tdm{font-weight:500}.tds{font-size:.66rem;color:var(--t2);margin-top:1px}
-/* BADGES */
-.bx{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:.61rem;font-weight:700;white-space:nowrap}
-.bg{background:#22d48f18;color:var(--gr)}.br{background:#f7506a18;color:var(--rd)}
-.bo{background:#f7923a18;color:var(--or)}.bb{background:#4f8ef718;color:var(--ac)}
-.bp{background:#a855f718;color:var(--pu)}.bk{background:#8b92b318;color:var(--t2)}
-.by{background:#f7b73118;color:var(--ye)}
-/* BUTTONS */
-.btn{padding:6px 11px;border-radius:var(--r2);border:none;font-family:inherit;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:4px}
-.b-ac{background:var(--ac);color:#fff}.b-ac:hover{background:var(--acd)}
-.b-gr{background:var(--gr);color:#0d0f18}.b-or{background:var(--or);color:#0d0f18}
-.b-rd{background:var(--rd);color:#fff}.b-gh{background:var(--s2);color:var(--tx);border:1px solid var(--bd)}
-.b-gh:hover{background:var(--s3)}.bsm{padding:3px 8px;font-size:.69rem}
-.bic{padding:3px 6px;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2);cursor:pointer;font-size:.75rem;transition:all .15s}.bic:hover{background:var(--s3)}
-/* FORMS */
-.fg{display:flex;flex-direction:column;gap:3px;position:relative}
-.fg.full{grid-column:1/-1}
-.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:7px;margin-bottom:9px}
-label{font-size:.67rem;color:var(--t2);font-weight:600}
-input,select,textarea{background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:var(--r2);padding:6px 9px;font-family:inherit;font-size:.78rem;outline:none;transition:border .15s;width:100%}
-input:focus,select:focus,textarea:focus{border-color:var(--ac)}
-textarea{resize:vertical;min-height:52px}
-select option{background:var(--s1)}
-/* MODAL */
-.ov{display:none;position:fixed;inset:0;background:#000a;z-index:200;align-items:center;justify-content:center;padding:11px}
-.ov.on{display:flex}
-.modal{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:18px;width:100%;max-width:520px;max-height:93vh;overflow-y:auto}
-.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
-.mh h3{font-size:.87rem;font-weight:700}
-.mx{background:none;border:none;color:var(--t2);font-size:1rem;cursor:pointer;padding:3px 7px;border-radius:5px}.mx:hover{background:var(--s2)}
-.ma{display:flex;gap:6px;margin-top:11px;justify-content:flex-end;flex-wrap:wrap}
-/* SUGGEST */
-.sug{position:absolute;z-index:300;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2);width:100%;max-height:130px;overflow-y:auto;top:100%;margin-top:2px;box-shadow:0 8px 20px #0006;display:none}
-.sui{padding:5px 9px;cursor:pointer;font-size:.74rem;border-bottom:1px solid var(--bd)}.sui:hover{background:var(--s3)}.sui:last-child{border:none}
-/* CATS */
-.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:5px;margin-bottom:8px}
-.cat{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;background:var(--s2);border:2px solid var(--bd);border-radius:var(--r);cursor:pointer;text-align:center;font-size:.63rem;font-weight:500;color:var(--t2);transition:all .15s}
-.cat:hover{border-color:var(--ac)}.cat.on{border-color:var(--ac);background:rgba(79,142,247,.1);color:var(--ac)}
-.cat .ci{font-size:1.35rem}
-/* TABS */
-.tabs{display:flex;gap:4px;margin-bottom:10px}
-.tab{flex:1;padding:7px;border:1px solid var(--bd);border-radius:var(--r2);background:var(--s2);cursor:pointer;text-align:center;font-size:.74rem;font-weight:600;color:var(--t2);transition:all .15s}
-.tab.on{border-color:var(--ac);color:var(--ac);background:rgba(79,142,247,.1)}
-/* MISC */
-.pos{color:var(--gr);font-family:monospace;font-weight:600}
-.neg{color:var(--rd);font-family:monospace;font-weight:600}
-.mono{font-family:monospace}
-.div{height:1px;background:var(--bd);margin:9px 0}
-.cw{padding:10px;height:175px;position:relative}
-.empty{text-align:center;padding:22px;color:var(--t2)}
-.ei{font-size:1.7rem;margin-bottom:4px}.empty p{font-size:.76rem}
-.pbar-w{background:var(--s3);border-radius:3px;height:5px;width:50px;overflow:hidden;display:inline-block}
-.pbar{height:100%;background:var(--gr)}
-/* TOAST */
-#toast{position:fixed;bottom:14px;right:14px;z-index:9999;padding:9px 14px;border-radius:var(--r);font-weight:600;font-size:.78rem;transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none;max-width:280px}
-#toast.on{transform:translateY(0);opacity:1}
-#toast.s{background:var(--gr);color:#0d0f18}
-#toast.e{background:var(--rd);color:#fff}
-#toast.i{background:var(--ac);color:#fff}
-#toast.w{background:var(--or);color:#0d0f18}
-/* PRINT */
-@media print{
-  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
-  body{background:#fff!important;margin:0;padding:0}
-  #login,#app,#sb,#topbar,#bnav,#mmenu,#wov,
-  .ov:not(.on),#toast,#btn-install,
-  .mh,.ma,#pma1,#pma2,#ps1{display:none!important}
-  .ov.on{
-    position:static!important;background:none!important;
-    padding:0!important;display:block!important;
-    width:100%!important;height:auto!important
-  }
-  .modal{
-    box-shadow:none!important;border:none!important;
-    max-width:100%!important;max-height:none!important;
-    overflow:visible!important;padding:0!important;
-    background:none!important;width:100%!important
-  }
-  #ps2{display:block!important}
-  /* ── A4 Albarán ── */
-  .alb{
-    width:210mm!important;min-height:280mm!important;
-    padding:18mm 15mm!important;margin:0 auto!important;
-    box-sizing:border-box!important;font-family:Arial,sans-serif!important;
-    font-size:11pt!important;color:#000!important;background:#fff!important
-  }
-  .alb-h{
-    display:flex!important;justify-content:space-between!important;
-    align-items:flex-start!important;margin-bottom:16px!important;
-    border-bottom:2px solid #333!important;padding-bottom:12px!important
-  }
-  .alb-title{font-size:22pt!important;font-weight:900!important;color:#333!important}
-  .alb table{width:100%!important;border-collapse:collapse!important;margin:12px 0!important}
-  .alb th{background:#333!important;color:#fff!important;padding:8px 10px!important;font-size:10pt!important;text-align:left!important}
-  .alb td{padding:8px 10px!important;border-bottom:1px solid #ddd!important;font-size:10pt!important}
-  .alb-sign{display:flex!important;justify-content:space-between!important;margin-top:30mm!important}
-  .alb-sb{height:20mm!important;border-bottom:1px solid #333!important;width:100%!important;margin-bottom:6px!important}
-  /* ── A4 Factura ── */
-  .pdoc{
-    width:210mm!important;min-height:280mm!important;
-    padding:18mm 15mm!important;margin:0 auto!important;
-    box-sizing:border-box!important;font-family:Arial,sans-serif!important;
-    color:#000!important;background:#fff!important
-  }
-  .pdoc-h{display:flex!important;justify-content:space-between!important;margin-bottom:20px!important}
-  .pdoc-shop{font-size:16pt!important;font-weight:900!important}
-  .pdoc-type{font-size:20pt!important;font-weight:900!important;color:#333!important}
-  .pdoc table{width:100%!important;border-collapse:collapse!important}
-  .pdoc th{background:#333!important;color:#fff!important;padding:8px!important}
-  .pdoc td{padding:8px!important;border-bottom:1px solid #eee!important}
-  /* ── Ticket 80mm ── */
-  .tkt{
-    width:72mm!important;margin:0 auto!important;
-    padding:4mm!important;font-family:monospace!important;
-    font-size:9pt!important;color:#000!important;background:#fff!important
-  }
-  .tkt-ln{border-top:1px dashed #000!important;margin:4px 0!important}
-  .tkt-r{display:flex!important;justify-content:space-between!important}
-  .tkt-c{text-align:center!important}
-  .tkt-b{font-weight:700!important}
-  /* ── Documento compra ── */
-  .cdoc{
-    width:210mm!important;padding:18mm 15mm!important;
-    margin:0 auto!important;font-family:Arial,sans-serif!important;
-    color:#000!important;background:#fff!important
-  }
-  @page{size:A4 portrait;margin:10mm}
-}
-/* PRINT DOCS */
-.pdoc{font-family:Arial,sans-serif;font-size:12px;color:#111;background:#fff;padding:20px}
-.pdoc-h{display:flex;justify-content:space-between;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:10px}
-.pdoc-shop{font-size:14px;font-weight:800}.pdoc-sub{font-size:10px;color:#666;margin-top:1px}
-.pdoc-type{font-size:15px;font-weight:800;border:2px solid #111;padding:3px 9px;display:inline-block}
-.pdoc-num{font-size:10px;color:#555;margin-top:2px}
-.pdoc-parties{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;padding:8px;background:#f8f8f8;border-radius:4px;font-size:11px}
-.pdoc-pt{font-size:9px;text-transform:uppercase;color:#888;font-weight:700;margin-bottom:2px}
-.pdoc table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:11px}
-.pdoc th{background:#222;color:#fff;padding:5px 8px;font-size:9px;text-transform:uppercase;text-align:left}
-.pdoc td{padding:5px 8px;border-bottom:1px solid #eee}
-.pdoc-tot{text-align:right;border-top:2px solid #111;padding-top:7px}
-.pdoc-row{display:flex;justify-content:space-between;font-size:11px;padding:1px 0}
-.pdoc-big{font-size:15px;font-weight:800;margin-top:4px;padding-top:4px;border-top:1px solid #ccc}
-.pdoc-foot{text-align:center;font-size:9px;color:#999;margin-top:10px;border-top:1px dashed #ccc;padding-top:6px}
-.tkt{font-family:'Courier New',monospace;font-size:12px;color:#000;background:#fff;padding:12px;max-width:290px;margin:0 auto;line-height:1.6}
-.tkt-c{text-align:center}.tkt-b{font-weight:bold}
-.tkt-ln{border-top:1px dashed #000;margin:5px 0}
-.tkt-r{display:flex;justify-content:space-between}
-.alb{font-family:Arial,sans-serif;font-size:12px;color:#111;background:#fff;padding:20px}
-.alb-h{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px dashed #333;padding-bottom:8px;margin-bottom:10px}
-.alb-title{font-size:13px;font-weight:800;border:2px solid #333;padding:3px 10px}
-.alb-sign{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;font-size:10px}
-.alb-sb{border-bottom:1px solid #000;height:34px;margin-bottom:3px}
-.cdoc{font-family:Arial,sans-serif;font-size:12px;color:#111;background:#fff;padding:20px}
-.cdoc-h{text-align:center;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:10px}
-.cdoc-box{border:1px solid #ccc;padding:9px;border-radius:4px;margin-bottom:8px;font-size:11px}
-.cdoc-lbl{font-size:9px;text-transform:uppercase;color:#888;font-weight:700;margin-bottom:2px}
-.cdoc-g{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:5px}
-.cdoc-sign{display:flex;justify-content:space-between;margin-top:16px;font-size:10px}
-.cdoc-sb{border-bottom:1px solid #000;height:34px;width:45%;margin-bottom:3px}
-/* DOC CHOOSER */
-.doc-opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:13px}
-.doc-opt{padding:13px 6px;background:var(--s2);border:2px solid var(--bd);border-radius:var(--r);cursor:pointer;text-align:center;transition:all .15s}
-.doc-opt:hover{border-color:var(--ac)}.doc-opt.on{border-color:var(--ac);background:rgba(79,142,247,.1)}
-.doc-opt .di{font-size:1.8rem;display:block;margin-bottom:4px}
-.doc-opt .dl{font-weight:700;font-size:.78rem}.doc-opt .ds{font-size:.63rem;color:var(--t2);margin-top:1px}
-/* MONTH FILTER */
-.mf{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
-/* TASKS */
-.task{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:7px;position:relative;overflow:hidden}
-.task::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
-.task.urg::before{background:var(--rd)}.task.nrm::before{background:var(--ye)}.task.low::before{background:var(--gr)}
-.task.done{opacity:.55}.task.done .task-t{text-decoration:line-through;color:var(--t2)}
-.task-h{display:flex;gap:9px;align-items:flex-start}
-.chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--bd);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px;font-size:.75rem}
-.chk.on{background:var(--gr);border-color:var(--gr);color:#0d0f18}
-.chk:hover{border-color:var(--ac)}
-.task-b{flex:1}.task-t{font-weight:600;font-size:.82rem;margin-bottom:2px}
-.task-d{font-size:.72rem;color:var(--t2);margin-bottom:5px}
-.task-m{display:flex;flex-wrap:wrap;gap:4px}
-.task-ac{display:flex;gap:5px;margin-top:7px}
-/* WORKER OVERLAY */
-#wov{display:none;position:fixed;inset:0;background:var(--bg);z-index:100;flex-direction:column}
-#wov.on{display:flex}
-#wtop{background:var(--s1);border-bottom:1px solid var(--bd);height:48px;display:flex;align-items:center;padding:0 15px;gap:10px}
-#wcont{flex:1;overflow-y:auto;padding:15px;max-width:680px;margin:0 auto;width:100%}
-/* COLORS */
-.csw{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s}.csw.on{border-color:#fff;transform:scale(1.1)}
-.tbtn{padding:5px 10px;border-radius:var(--r2);border:1px solid var(--bd);background:var(--s2);color:var(--tx);cursor:pointer;font-size:.73rem;font-weight:600;transition:all .15s}
-.tbtn:hover,.tbtn.on{background:var(--ac);color:#fff;border-color:var(--ac)}
-.trow{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd)}
-.trow:last-child{border:none}
-.tog{width:34px;height:18px;background:var(--bd);border-radius:10px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
-.tog.on{background:var(--ac)}
-.tog::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}
-.tog.on::after{transform:translateX(16px)}
-.set-g{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-.set-c{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:13px}
-.set-c h4{font-size:.6rem;font-weight:700;margin-bottom:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
-.cg{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:8px}
-.db-ac{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:11px;display:flex;align-items:center;gap:9px;margin-bottom:7px}
-.db-st{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:6px;margin-bottom:10px}
-.dsm{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2);padding:8px;text-align:center}
-.dsm-v{font-size:1.05rem;font-weight:700;font-family:monospace;color:var(--ac)}.dsm-l{font-size:.61rem;color:var(--t2)}
-::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#353c58;border-radius:3px}
-</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+<style>:root{--bg:#0d0f18;--s1:#141720;--s2:#1c2030;--s3:#242840;--bd:#2a2f45;--ac:#4f8ef7;--acd:#3a7ae0;--gr:#22d48f;--rd:#f7506a;--or:#f7923a;--pu:#a855f7;--ye:#f7b731;--cy:#22d4d4;--tx:#e4e8f5;--t2:#8b92b3;--t3:#5a6080;--r:10px;--r2:7px;--sw:225px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}#login{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center}#login.off{display:none}.lbox{width:100%;max-width:360px;padding:24px;text-align:center}.llogo{font-size:1.6rem;font-weight:900;color:var(--ac);margin-bottom:4px}.lsub{font-size:.8rem;color:var(--t2);margin-bottom:24px}.roles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0}.role-card{background:var(--s1);border:2px solid var(--bd);border-radius:14px;padding:24px 12px;cursor:pointer;transition:all .2s;user-select:none}.role-card:hover,.role-card:active{border-color:var(--ac);background:var(--s2)}.role-ic{font-size:2.6rem;display:block;margin-bottom:8px}.role-nm{font-weight:800;font-size:.95rem}.role-sb{font-size:.68rem;color:var(--t2);margin-top:3px}#pinbox{display:none;margin-top:0}.pin-who{font-size:.85rem;color:var(--t2);margin-bottom:14px}.pin-who b{color:var(--tx)}.dots{display:flex;gap:12px;justify-content:center;margin-bottom:10px}.dot{width:14px;height:14px;border-radius:50%;background:var(--bd);transition:background .2s}.dot.on{background:var(--ac)}.pin-err{color:var(--rd);font-size:.76rem;min-height:18px;margin-bottom:6px}.pin-inp{width:160px;text-align:center;font-size:1.8rem;letter-spacing:10px;padding:10px;border-radius:10px;border:2px solid var(--bd);background:var(--s2);color:var(--tx);outline:none;margin-bottom:6px}.pin-inp:focus{border-color:var(--ac)}.hint{font-size:.67rem;color:var(--t3);margin-bottom:12px}.pad{display:grid;grid-template-columns:repeat(3,60px);gap:8px;justify-content:center;margin-bottom:12px}.pb{width:60px;height:60px;border-radius:50%;background:var(--s2);border:1px solid var(--bd);color:var(--tx);font-size:1.2rem;font-weight:700;cursor:pointer;transition:all .15s}.pb:hover,.pb:active{background:var(--s3);border-color:var(--ac)}.pb.ok{background:var(--ac);color:#fff}.pin-btns{display:flex;gap:8px;justify-content:center}.lbtn{padding:8px 16px;border-radius:20px;border:1px solid var(--bd);background:var(--s2);color:var(--t2);font-size:.76rem;cursor:pointer}.lbtn:hover{border-color:var(--ac);color:var(--ac)}.lbtn.main{background:var(--ac);color:#fff;border-color:var(--ac)}#app{display:none;min-height:100vh}#app.on{display:flex}#sb{width:var(--sw);min-height:100vh;background:var(--s1);border-right:1px solid var(--bd);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:50}.sb-logo{padding:13px;border-bottom:1px solid var(--bd)}.sb-logo .nm{font-size:.95rem;font-weight:900}.nm .a{color:var(--ac)}.sb-logo .sub{font-size:.56rem;color:var(--t2);text-transform:uppercase;letter-spacing:1px;margin-top:1px}.sb-logo .shop{font-size:.74rem;font-weight:600;margin-top:5px;padding-top:5px;border-top:1px solid var(--bd);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sec{padding:9px 10px 2px;font-size:.56rem;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-weight:700}.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;margin:1px 5px;border-radius:var(--r2);cursor:pointer;font-size:.78rem;font-weight:500;color:var(--t2);transition:all .15s;user-select:none}.ni:hover{background:var(--s2);color:var(--tx)}.ni.on{background:rgba(79,142,247,.15);color:var(--ac);border:1px solid rgba(79,142,247,.2)}.ni .ic{width:16px;text-align:center;font-size:.85rem;flex-shrink:0}.badge{margin-left:auto;background:var(--rd);color:#fff;border-radius:20px;padding:1px 6px;font-size:.59rem;font-weight:700;flex-shrink:0}.sb-bot{margin-top:auto;padding:8px 7px;border-top:1px solid var(--bd)}.sdot{width:8px;height:8px;border-radius:50%;background:var(--bd);display:inline-block;transition:background .5s;margin-right:4px}.sdot.ok{background:var(--gr)}#main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}#topbar{background:var(--s1);border-bottom:1px solid var(--bd);height:48px;display:flex;align-items:center;padding:0 15px;gap:8px;position:sticky;top:0;z-index:40}.tt{font-weight:700;font-size:.88rem;flex:1}#content{padding:16px;flex:1}.pg{display:none}.pg.on{display:block}.ph{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}.ph h2{font-size:1rem;font-weight:700;flex:1}.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin-bottom:14px}.sc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px;position:relative;overflow:hidden}.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ac)}.sc.g::before{background:var(--gr)}.sc.r::before{background:var(--rd)}.sc.o::before{background:var(--or)}.sc.p::before{background:var(--pu)}.sc.y::before{background:var(--ye)}.sl{font-size:.6rem;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;font-weight:600}.sv{font-size:1.25rem;font-weight:800;font-family:monospace;color:var(--ac)}.sc.g .sv{color:var(--gr)}.sc.r .sv{color:var(--rd)}.sc.o .sv{color:var(--or)}.sc.p .sv{color:var(--pu)}.sc.y .sv{color:var(--ye)}.ss{font-size:.65rem;color:var(--t2);margin-top:2px}.card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:11px}.ch{padding:9px 13px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:8px}.ch h3{font-size:.8rem;font-weight:600}.dg{display:grid;grid-template-columns:1fr 1fr;gap:11px}.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.75rem}th{padding:6px 9px;text-align:left;color:var(--t2);font-size:.59rem;font-weight:700;text-transform:uppercase;border-bottom:1px solid var(--bd);background:var(--s2);white-space:nowrap}td{padding:7px 9px;border-bottom:1px solid var(--bd);vertical-align:middle}tr:last-child td{border-bottom:none}tbody tr:hover td{background:rgba(255,255,255,.015)}.tdm{font-weight:500}.tds{font-size:.66rem;color:var(--t2);margin-top:1px}.bx{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:.61rem;font-weight:700;white-space:nowrap}.bg{background:#22d48f18;color:var(--gr)}.br{background:#f7506a18;color:var(--rd)}.bo{background:#f7923a18;color:var(--or)}.bb{background:#4f8ef718;color:var(--ac)}.bp{background:#a855f718;color:var(--pu)}.bk{background:#8b92b318;color:var(--t2)}.by{background:#f7b73118;color:var(--ye)}.btn{padding:6px 11px;border-radius:var(--r2);border:none;font-family:inherit;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:4px}.b-ac{background:var(--ac);color:#fff}.b-ac:hover{background:var(--acd)}.b-gr{background:var(--gr);color:#0d0f18}.b-or{background:var(--or);color:#0d0f18}.b-rd{background:var(--rd);color:#fff}.b-gh{background:var(--s2);color:var(--tx);border:1px solid var(--bd)}.b-gh:hover{background:var(--s3)}.bsm{padding:3px 8px;font-size:.69rem}.bic{padding:3px 6px;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2);cursor:pointer;font-size:.75rem;transition:all .15s}.bic:hover{background:var(--s3)}.fg{display:flex;flex-direction:column;gap:3px;position:relative}.fg.full{grid-column:1/-1}.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:7px;margin-bottom:9px}label{font-size:.67rem;color:var(--t2);font-weight:600}input,select,textarea{background:var(--s2);border:1px solid var(--bd);color:var(--tx);border-radius:var(--r2);padding:6px 9px;font-family:inherit;font-size:.78rem;outline:none;transition:border .15s;width:100%}input:focus,select:focus,textarea:focus{border-color:var(--ac)}textarea{resize:vertical;min-height:52px}select option{background:var(--s1)}.ov{display:none;position:fixed;inset:0;background:#000a;z-index:200;align-items:center;justify-content:center;padding:11px}.ov.on{display:flex}.modal{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:18px;width:100%;max-width:520px;max-height:93vh;overflow-y:auto}.mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}.mh h3{font-size:.87rem;font-weight:700}.mx{background:none;border:none;color:var(--t2);font-size:1rem;cursor:pointer;padding:3px 7px;border-radius:5px}.mx:hover{background:var(--s2)}.ma{display:flex;gap:6px;margin-top:11px;justify-content:flex-end;flex-wrap:wrap}.sug{position:absolute;z-index:300;background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2);width:100%;max-height:130px;overflow-y:auto;top:100%;margin-top:2px;box-shadow:0 8px 20px #0006;display:none}.sui{padding:5px 9px;cursor:pointer;font-size:.74rem;border-bottom:1px solid var(--bd)}.sui:hover{background:var(--s3)}.sui:last-child{border:none}.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:5px;margin-bottom:8px}.cat{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;background:var(--s2);border:2px solid var(--bd);border-radius:var(--r);cursor:pointer;text-align:center;font-size:.63rem;font-weight:500;color:var(--t2);transition:all .15s}.cat:hover{border-color:var(--ac)}.cat.on{border-color:var(--ac);background:rgba(79,142,247,.1);color:var(--ac)}.cat .ci{font-size:1.35rem}.tabs{display:flex;gap:4px;margin-bottom:10px}.tab{flex:1;padding:7px;border:1px solid var(--bd);border-radius:var(--r2);background:var(--s2);cursor:pointer;text-align:center;font-size:.74rem;font-weight:600;color:var(--t2);transition:all .15s}.tab.on{border-color:var(--ac);color:var(--ac);background:rgba(79,142,247,.1)}.pos{color:var(--gr);font-family:monospace;font-weight:600}.neg{color:var(--rd);font-family:monospace;font-weight:600}.mono{font-family:monospace}.div{height:1px;background:var(--bd);margin:9px 0}.cw{padding:10px;height:175px;position:relative}.empty{text-align:center;padding:22px;color:var(--t2)}.ei{font-size:1.7rem;margin-bottom:4px}.empty p{font-size:.76rem}.pbar-w{background:var(--s3);border-radius:3px;height:5px;width:50px;overflow:hidden;display:inline-block}.pbar{height:100%;background:var(--gr)}#toast{position:fixed;bottom:14px;right:14px;z-index:9999;padding:9px 14px;border-radius:var(--r);font-weight:600;font-size:.78rem;transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none;max-width:280px}#toast.on{transform:translateY(0);opacity:1}#toast.s{background:var(--gr);color:#0d0f18}#toast.e{background:var(--rd);color:#fff}#toast.i{background:var(--ac);color:#fff}#toast.w{background:var(--or);color:#0d0f18}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}body{background:#fff!important;margin:0;padding:0}#login,#app,#sb,#topbar,#bnav,#mmenu,#wov,.ov:not(.on),#toast,#btn-install,.mh,.ma,#pma1,#pma2,#ps1{display:none!important}.ov.on{position:static!important;background:none!important;padding:0!important;display:block!important;width:100%!important;height:auto!important}.modal{box-shadow:none!important;border:none!important;max-width:100%!important;max-height:none!important;overflow:visible!important;padding:0!important;background:none!important;width:100%!important}#ps2{display:block!important}.alb{width:210mm!important;min-height:280mm!important;padding:18mm 15mm!important;margin:0 auto!important;box-sizing:border-box!important;font-family:Arial,sans-serif!important;font-size:11pt!important;color:#000!important;background:#fff!important}.alb-h{display:flex!important;justify-content:space-between!important;align-items:flex-start!important;margin-bottom:16px!important;border-bottom:2px solid #333!important;padding-bottom:12px!important}.alb-title{font-size:22pt!important;font-weight:900!important;color:#333!important}.alb table{width:100%!important;border-collapse:collapse!important;margin:12px 0!important}.alb th{background:#333!important;color:#fff!important;padding:8px 10px!important;font-size:10pt!important;text-align:left!important}.alb td{padding:8px 10px!important;border-bottom:1px solid #ddd!important;font-size:10pt!important}.alb-sign{display:flex!important;justify-content:space-between!important;margin-top:30mm!important}.alb-sb{height:20mm!important;border-bottom:1px solid #333!important;width:100%!important;margin-bottom:6px!important}.pdoc{width:210mm!important;min-height:280mm!important;padding:18mm 15mm!important;margin:0 auto!important;box-sizing:border-box!important;font-family:Arial,sans-serif!important;color:#000!important;background:#fff!important}.pdoc-h{display:flex!important;justify-content:space-between!important;margin-bottom:20px!important}.pdoc-shop{font-size:16pt!important;font-weight:900!important}.pdoc-type{font-size:20pt!important;font-weight:900!important;color:#333!important}.pdoc table{width:100%!important;border-collapse:collapse!important}.pdoc th{background:#333!important;color:#fff!important;padding:8px!important}.pdoc td{padding:8px!important;border-bottom:1px solid #eee!important}.tkt{width:72mm!important;margin:0 auto!important;padding:4mm!important;font-family:monospace!important;font-size:9pt!important;color:#000!important;background:#fff!important}.tkt-ln{border-top:1px dashed #000!important;margin:4px 0!important}.tkt-r{display:flex!important;justify-content:space-between!important}.tkt-c{text-align:center!important}.tkt-b{font-weight:700!important}.cdoc{width:210mm!important;padding:18mm 15mm!important;margin:0 auto!important;font-family:Arial,sans-serif!important;color:#000!important;background:#fff!important}@page{size:A4 portrait;margin:10mm}}.pdoc{font-family:Arial,sans-serif;font-size:12px;color:#111;background:#fff;padding:20px}.pdoc-h{display:flex;justify-content:space-between;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:10px}.pdoc-shop{font-size:14px;font-weight:800}.pdoc-sub{font-size:10px;color:#666;margin-top:1px}.pdoc-type{font-size:15px;font-weight:800;border:2px solid #111;padding:3px 9px;display:inline-block}.pdoc-num{font-size:10px;color:#555;margin-top:2px}.pdoc-parties{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;padding:8px;background:#f8f8f8;border-radius:4px;font-size:11px}.pdoc-pt{font-size:9px;text-transform:uppercase;color:#888;font-weight:700;margin-bottom:2px}.pdoc table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:11px}.pdoc th{background:#222;color:#fff;padding:5px 8px;font-size:9px;text-transform:uppercase;text-align:left}.pdoc td{padding:5px 8px;border-bottom:1px solid #eee}.pdoc-tot{text-align:right;border-top:2px solid #111;padding-top:7px}.pdoc-row{display:flex;justify-content:space-between;font-size:11px;padding:1px 0}.pdoc-big{font-size:15px;font-weight:800;margin-top:4px;padding-top:4px;border-top:1px solid #ccc}.pdoc-foot{text-align:center;font-size:9px;color:#999;margin-top:10px;border-top:1px dashed #ccc;padding-top:6px}.tkt{font-family:'Courier New',monospace;font-size:12px;color:#000;background:#fff;padding:12px;max-width:290px;margin:0 auto;line-height:1.6}.tkt-c{text-align:center}.tkt-b{font-weight:bold}.tkt-ln{border-top:1px dashed #000;margin:5px 0}.tkt-r{display:flex;justify-content:space-between}.alb{font-family:Arial,sans-serif;font-size:12px;color:#111;background:#fff;padding:20px}.alb-h{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px dashed #333;padding-bottom:8px;margin-bottom:10px}.alb-title{font-size:13px;font-weight:800;border:2px solid #333;padding:3px 10px}.alb-sign{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;font-size:10px}.alb-sb{border-bottom:1px solid #000;height:34px;margin-bottom:3px}.cdoc{font-family:Arial,sans-serif;font-size:12px;color:#111;background:#fff;padding:20px}.cdoc-h{text-align:center;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:10px}.cdoc-box{border:1px solid #ccc;padding:9px;border-radius:4px;margin-bottom:8px;font-size:11px}.cdoc-lbl{font-size:9px;text-transform:uppercase;color:#888;font-weight:700;margin-bottom:2px}.cdoc-g{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:5px}.cdoc-sign{display:flex;justify-content:space-between;margin-top:16px;font-size:10px}.cdoc-sb{border-bottom:1px solid #000;height:34px;width:45%;margin-bottom:3px}.doc-opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:13px}.doc-opt{padding:13px 6px;background:var(--s2);border:2px solid var(--bd);border-radius:var(--r);cursor:pointer;text-align:center;transition:all .15s}.doc-opt:hover{border-color:var(--ac)}.doc-opt.on{border-color:var(--ac);background:rgba(79,142,247,.1)}.doc-opt .di{font-size:1.8rem;display:block;margin-bottom:4px}.doc-opt .dl{font-weight:700;font-size:.78rem}.doc-opt .ds{font-size:.63rem;color:var(--t2);margin-top:1px}.mf{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.task{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:7px;position:relative;overflow:hidden}.task::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}.task.urg::before{background:var(--rd)}.task.nrm::before{background:var(--ye)}.task.low::before{background:var(--gr)}.task.done{opacity:.55}.task.done .task-t{text-decoration:line-through;color:var(--t2)}.task-h{display:flex;gap:9px;align-items:flex-start}.chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--bd);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px;font-size:.75rem}.chk.on{background:var(--gr);border-color:var(--gr);color:#0d0f18}.chk:hover{border-color:var(--ac)}.task-b{flex:1}.task-t{font-weight:600;font-size:.82rem;margin-bottom:2px}.task-d{font-size:.72rem;color:var(--t2);margin-bottom:5px}.task-m{display:flex;flex-wrap:wrap;gap:4px}.task-ac{display:flex;gap:5px;margin-top:7px}#wov{display:none;position:fixed;inset:0;background:var(--bg);z-index:100;flex-direction:column}#wov.on{display:flex}#wtop{background:var(--s1);border-bottom:1px solid var(--bd);height:48px;display:flex;align-items:center;padding:0 15px;gap:10px}#wcont{flex:1;overflow-y:auto;padding:15px;max-width:680px;margin:0 auto;width:100%}.csw{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s}.csw.on{border-color:#fff;transform:scale(1.1)}.tbtn{padding:5px 10px;border-radius:var(--r2);border:1px solid var(--bd);background:var(--s2);color:var(--tx);cursor:pointer;font-size:.73rem;font-weight:600;transition:all .15s}.tbtn:hover,.tbtn.on{background:var(--ac);color:#fff;border-color:var(--ac)}.trow{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd)}.trow:last-child{border:none}.tog{width:34px;height:18px;background:var(--bd);border-radius:10px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}.tog.on{background:var(--ac)}.tog::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}.tog.on::after{transform:translateX(16px)}.set-g{display:grid;grid-template-columns:1fr 1fr;gap:11px}.set-c{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:13px}.set-c h4{font-size:.6rem;font-weight:700;margin-bottom:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}.cg{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:8px}.db-ac{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r);padding:11px;display:flex;align-items:center;gap:9px;margin-bottom:7px}.db-st{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:6px;margin-bottom:10px}.dsm{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2);padding:8px;text-align:center}.dsm-v{font-size:1.05rem;font-weight:700;font-family:monospace;color:var(--ac)}.dsm-l{font-size:.61rem;color:var(--t2)}::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#353c58;border-radius:3px}.qbig{border:2px solid var(--bd);border-radius:var(--r);padding:20px 12px;text-align:center;cursor:pointer;transition:all .15s;user-select:none}.qbig:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}.qbig:active{transform:scale(.97)}.qbig-ic{font-size:2.8rem;margin-bottom:8px;display:block}.qbig-lbl{font-size:1.1rem;font-weight:900;letter-spacing:1px;margin-bottom:4px}.qbig-sub{font-size:.68rem;color:var(--t2);margin-bottom:8px}.qbig-key{display:inline-block;background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:2px 8px;font-size:.62rem;color:var(--t3);font-family:monospace;font-weight:700;margin-top:4px}.qcat{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;background:var(--s2);border:2px solid var(--bd);border-radius:var(--r);cursor:pointer;font-size:.58rem;font-weight:600;color:var(--t2);transition:all .12s;text-align:center}.qcat:active,.qcat.on{border-color:var(--ac);background:rgba(79,142,247,.15);color:var(--ac)}.qcat span{font-size:1.3rem}.qpay{flex:1;padding:8px 4px;background:var(--s2);border:2px solid var(--bd);border-radius:var(--r2);cursor:pointer;font-size:.72rem;font-weight:600;color:var(--t2);transition:all .12s;font-family:inherit}.qpay:active,.qpay.on{border-color:var(--ac);background:rgba(79,142,247,.15);color:var(--ac)}#fab{position:fixed;bottom:24px;right:18px;z-index:300;display:flex;flex-direction:column;align-items:flex-end;gap:8px}.fab-main{width:58px;height:58px;border-radius:50%;background:var(--ac);color:#fff;border:none;font-size:1.6rem;cursor:pointer;box-shadow:0 4px 20px rgba(79,142,247,.5);display:flex;align-items:center;justify-content:center;transition:all .2s}.fab-main:active{transform:scale(.92)}.fab-menu{display:none;flex-direction:column;gap:6px;align-items:flex-end}.fab-menu.on{display:flex}.fab-item{display:flex;align-items:center;gap:8px;cursor:pointer}.fab-lbl{background:var(--s1);border:1px solid var(--bd);color:var(--tx);padding:5px 12px;border-radius:20px;font-size:.78rem;font-weight:600;white-space:nowrap}.fab-btn{width:44px;height:44px;border-radius:50%;border:none;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}.qcat{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;background:var(--s2);border:2px solid var(--bd);border-radius:var(--r);cursor:pointer;font-size:.58rem;font-weight:600;color:var(--t2);transition:all .12s;text-align:center}.qcat:active,.qcat.on{border-color:var(--ac);background:rgba(79,142,247,.15);color:var(--ac)}.qcat span{font-size:1.3rem}.qpay{flex:1;padding:8px 4px;background:var(--s2);border:2px solid var(--bd);border-radius:var(--r2);cursor:pointer;font-size:.72rem;font-weight:600;color:var(--t2);transition:all .12s;font-family:inherit}.qpay:active,.qpay.on{border-color:var(--ac);background:rgba(79,142,247,.15);color:var(--ac)}#fab{position:fixed;bottom:24px;right:18px;z-index:300;display:flex;flex-direction:column;align-items:flex-end;gap:8px}.fab-main{width:58px;height:58px;border-radius:50%;background:var(--ac);color:#fff;border:none;font-size:1.6rem;cursor:pointer;box-shadow:0 4px 20px rgba(79,142,247,.5);display:flex;align-items:center;justify-content:center;transition:all .2s}.fab-main:active{transform:scale(.92)}.fab-menu{display:none;flex-direction:column;gap:6px;align-items:flex-end}.fab-menu.on{display:flex}.fab-item{display:flex;align-items:center;gap:8px;cursor:pointer}.fab-lbl{background:var(--s1);border:1px solid var(--bd);color:var(--tx);padding:5px 12px;border-radius:20px;font-size:.78rem;font-weight:600;white-space:nowrap}.fab-btn{width:44px;height:44px;border-radius:50%;border:none;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.3)}</style>
 </head>
 <body>
-<!-- LOGIN -->
+
 <div id="login">
 <div class="lbox">
   <div class="llogo">🔒 SecondShop PRO</div>
   <div class="lsub">Sistema de gestión de tienda</div>
-  <!-- Step 1: Role -->
+  
   <div id="step1">
     <div style="font-size:.82rem;color:var(--t2);margin-bottom:14px">¿Quién eres?</div>
     <div class="roles">
@@ -326,7 +37,7 @@ select option{background:var(--s1)}
       </div>
     </div>
   </div>
-  <!-- Step 2: PIN -->
+  
   <div id="step2" style="display:none">
     <div class="pin-who"><span id="role-lbl"></span></div>
     <div class="dots"><div class="dot" id="d0"></div><div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div></div>
@@ -346,10 +57,8 @@ select option{background:var(--s1)}
   </div>
 </div>
 </div>
-
-<!-- APP (OWNER) -->
 <div id="app">
-<!-- SIDEBAR -->
+
 <nav id="sb">
   <div class="sb-logo">
     <div class="nm"><span class="a">Second</span>Shop PRO</div>
@@ -358,6 +67,7 @@ select option{background:var(--s1)}
   </div>
   <div class="sec">Principal</div>
   <div class="ni on" onclick="go('dash',this)"><span class="ic">📊</span> Panel</div>
+  <div class="ni" id="nav-quick" onclick="go('quick',this)" style="border:1px solid rgba(79,142,247,.3)"><span class="ic">⚡</span> Modo Rápido</div>
   <div class="ni" onclick="go('ventas',this)"><span class="ic">💰</span> Ventas</div>
   <div class="ni" onclick="go('compras',this)"><span class="ic">🛒</span> Compras</div>
   <div class="ni" onclick="go('reps',this)"><span class="ic">🔧</span> Reparaciones <span class="badge" id="br" style="display:none">0</span></div>
@@ -371,13 +81,15 @@ select option{background:var(--s1)}
   <div class="ni" onclick="go('qr',this)"><span class="ic">📷</span> Escáner QR</div>
   <div class="sec">Análisis</div>
   <div class="ni" onclick="go('informes',this)"><span class="ic">📈</span> Informes</div>
+  <div class="ni" onclick="go('rebu',this)"><span class="ic">📋</span> REBU</div>
+  <div class="ni" onclick="go('libro',this)"><span class="ic">📒</span> Libro Registro</div>
   <div class="sb-bot">
     <div class="ni" onclick="go('db',this)"><span class="ic">🗄️</span> Base de datos</div>
     <div class="ni" onclick="go('cfg',this)"><span class="ic">⚙️</span> Configuración</div>
     <div class="ni" onclick="doLock()"><span class="ic">🔒</span> Bloquear</div>
   </div>
 </nav>
-<!-- MAIN -->
+
 <div id="main">
   <div id="topbar">
     <div class="tt" id="tbt">Panel</div>
@@ -395,8 +107,6 @@ select option{background:var(--s1)}
     </div>
   </div>
   <div id="content">
-
-  <!-- DASHBOARD -->
   <div id="pg-dash" class="pg on">
     <div class="ph"><h2 id="greeting">Buenos días 👋</h2><span style="font-size:.73rem;color:var(--t2)" id="fhoy"></span></div>
     <div class="sg" id="dstats"></div>
@@ -407,12 +117,10 @@ select option{background:var(--s1)}
       <div class="card"><div class="ch"><h3>💳 Créditos pendientes</h3></div><div id="dcreds" style="padding:4px"></div></div>
     </div>
   </div>
-
-  <!-- VENTAS -->
   <div id="pg-ventas" class="pg">
     <div class="ph">
       <h2>💰 Ventas</h2>
-      <input type="text" placeholder="Buscar..." style="width:140px" oninput="filtT('tbv',this.value)">
+      <input type="text" placeholder="Buscar..." style="width:120px" oninput="filtT('tbv',this.value)">
       <select id="vmes" onchange="filtM('tbv',this.value)" style="width:auto"><option value="">Todos los meses</option></select>
       <button class="btn b-ac" onclick="om('mv')">＋ Nueva venta</button>
     </div>
@@ -421,8 +129,6 @@ select option{background:var(--s1)}
       <tbody id="tbv"></tbody>
     </table></div></div>
   </div>
-
-  <!-- COMPRAS -->
   <div id="pg-compras" class="pg">
     <div class="ph">
       <h2>🛒 Compras</h2>
@@ -435,8 +141,6 @@ select option{background:var(--s1)}
       <tbody id="tba"></tbody>
     </table></div></div>
   </div>
-
-  <!-- REPARACIONES -->
   <div id="pg-reps" class="pg">
     <div class="ph">
       <h2>🔧 Reparaciones</h2>
@@ -450,8 +154,6 @@ select option{background:var(--s1)}
       <tbody id="tbr"></tbody>
     </table></div></div>
   </div>
-
-  <!-- INVENTARIO -->
   <div id="pg-inv" class="pg">
     <div class="ph">
       <h2>📦 Inventario</h2>
@@ -464,8 +166,6 @@ select option{background:var(--s1)}
       <tbody id="tbi"></tbody>
     </table></div></div>
   </div>
-
-  <!-- CREDITO -->
   <div id="pg-cred" class="pg">
     <div class="ph"><h2>💳 Crédito</h2><button class="btn b-ac" onclick="om('mcr')">＋ Nuevo</button></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:11px">
@@ -478,8 +178,6 @@ select option{background:var(--s1)}
       <tbody id="tbcr"></tbody>
     </table></div></div>
   </div>
-
-  <!-- PEDIDOS -->
   <div id="pg-pedidos" class="pg">
     <div class="ph"><h2>📋 Pedidos</h2><button class="btn b-ac" onclick="om('mped')">＋ Nuevo</button></div>
     <div class="sg" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
@@ -493,8 +191,6 @@ select option{background:var(--s1)}
       <tbody id="tbped"></tbody>
     </table></div></div>
   </div>
-
-  <!-- GASTOS -->
   <div id="pg-gastos" class="pg">
     <div class="ph">
       <h2>💸 Gastos</h2>
@@ -512,8 +208,6 @@ select option{background:var(--s1)}
       <tbody id="tbg"></tbody>
     </table></div></div>
   </div>
-
-  <!-- CLIENTES -->
   <div id="pg-clientes" class="pg">
     <div class="ph"><h2>👥 Clientes</h2><input type="text" placeholder="Buscar..." style="width:150px" oninput="filtCli(this.value)"><button class="btn b-gh" onclick="om('mcli')">＋ Nuevo</button></div>
     <div class="dg">
@@ -521,12 +215,10 @@ select option{background:var(--s1)}
       <div class="card"><div class="ch"><h3>Historial</h3><span id="clisel" style="font-size:.72rem;color:var(--t2)">Selecciona un cliente</span></div><div id="hcli" style="padding:11px"><div class="empty"><div class="ei">👆</div><p>Haz clic en un cliente</p></div></div></div>
     </div>
   </div>
-
-  <!-- QR -->
   <div id="pg-qr" class="pg">
     <div class="ph"><h2>📱 Escáner & Generador QR</h2></div>
     <div class="dg">
-      <!-- SCANNER -->
+      
       <div class="card">
         <div class="ch"><h3>📷 Escanear / Buscar IMEI</h3></div>
         <div style="padding:13px">
@@ -548,7 +240,7 @@ select option{background:var(--s1)}
           <div id="scan-act" style="margin-top:10px"></div>
         </div>
       </div>
-      <!-- GENERATOR -->
+      
       <div class="card">
         <div class="ch"><h3>⚡ Generar QR</h3></div>
         <div style="padding:13px">
@@ -573,7 +265,7 @@ select option{background:var(--s1)}
         </div>
       </div>
     </div>
-    <!-- QUICK ENTRY via QR -->
+    
     <div class="card" style="margin-top:4px">
       <div class="ch"><h3>⚡ Entrada rápida por IMEI</h3><span style="font-size:.72rem;color:var(--t2)">Escanea → rellena automáticamente</span></div>
       <div style="padding:13px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px">
@@ -583,8 +275,6 @@ select option{background:var(--s1)}
       </div>
     </div>
   </div>
-
-  <!-- TAREAS -->
   <div id="pg-tareas" class="pg">
     <div class="ph">
       <h2>📝 Tareas</h2>
@@ -600,16 +290,14 @@ select option{background:var(--s1)}
     <div class="sg" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr));margin-bottom:11px" id="tstats"></div>
     <div id="tlist"></div>
   </div>
-
-  <!-- QR -->
   <div id="pg-qr" class="pg">
     <div class="ph"><h2>📷 Escáner & Generador QR</h2></div>
     <div class="dg">
-      <!-- SCANNER -->
+      
       <div class="card">
         <div class="ch"><h3>📷 Escanear IMEI / Código</h3></div>
         <div style="padding:13px">
-          <!-- Camera status info -->
+          
           <div id="cam-info" style="padding:9px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.3);border-radius:var(--r2);font-size:.75rem;margin-bottom:10px">
             💡 <b>Para usar la cámara:</b> el archivo debe abrirse desde un servidor o <b>localhost</b>.
             Desde archivo local (<code>file://</code>), usa la <b>entrada manual</b> abajo.
@@ -626,7 +314,7 @@ select option{background:var(--s1)}
           </div>
           <div id="scan-res" style="padding:8px;background:var(--s2);border-radius:var(--r2);font-size:.77rem;color:var(--t2);min-height:32px;margin-bottom:9px">En espera...</div>
           <div class="div"></div>
-          <!-- MANUAL INPUT - always works -->
+          
           <div style="background:rgba(34,212,143,.07);border:1px solid rgba(34,212,143,.25);border-radius:var(--r);padding:11px;margin-bottom:8px">
             <div style="font-size:.75rem;font-weight:700;color:var(--gr);margin-bottom:8px">⌨️ Entrada manual (siempre funciona)</div>
             <div class="fg" style="margin-bottom:7px">
@@ -645,7 +333,7 @@ select option{background:var(--s1)}
           <div id="scan-action" style="margin-top:9px"></div>
         </div>
       </div>
-      <!-- GENERATOR -->
+      
       <div class="card">
         <div class="ch"><h3>⚡ Generar QR</h3></div>
         <div style="padding:13px">
@@ -671,7 +359,123 @@ select option{background:var(--s1)}
       </div>
     </div>
   </div>
-  <!-- INFORMES -->
+  
+  <div id="pg-rebu" class="pg">
+    <div class="ph">
+      <h2>📋 REBU — Registro de Bienes Usados</h2>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn b-gh bsm" onclick="expREBU()">📊 Exportar Excel</button>
+        <button class="btn b-ac bsm" onclick="printREBU()">🖨️ Imprimir</button>
+      </div>
+    </div>
+    <div style="padding:9px 13px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.3);border-radius:var(--r);margin-bottom:12px;font-size:.76rem">
+      📋 <b>REBU</b> — Reglamento de Bienes Usados. Registro obligatorio de compras de particulares.
+      Cada compra genera automáticamente una entrada en el REBU.
+    </div>
+    <div class="card"><div class="tw"><table id="rebu-table">
+      <thead><tr>
+        <th>N° REBU</th><th>Fecha</th><th>Artículo</th><th>IMEI/Serie</th>
+        <th>Vendedor</th><th>DNI/NIE</th><th>Precio</th><th>Estado</th>
+      </tr></thead>
+      <tbody id="tb-rebu"></tbody>
+    </table></div></div>
+  </div>
+  <div id="pg-libro" class="pg">
+    <div class="ph">
+      <h2>📒 Libro Registro de Operaciones</h2>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <select id="libro-yr" onchange="renderLibro()" style="width:auto"></select>
+        <select id="libro-tipo" onchange="renderLibro()" style="width:auto">
+          <option value="">Todas</option>
+          <option value="compra">Compras</option>
+          <option value="venta">Ventas</option>
+          <option value="rep">Reparaciones</option>
+        </select>
+        <button class="btn b-gh bsm" onclick="expLibro()">📊 Exportar</button>
+        <button class="btn b-ac bsm" onclick="printLibro('')">🖨️ Todo</button>
+        <button class="btn b-or bsm" onclick="printLibro('compra')">🛒 Compras</button>
+        <button class="btn b-gh bsm" onclick="printLibro('venta')">💰 Ventas</button>
+        <button class="btn b-gr bsm" onclick="printLibro('rep')">🔧 Reparac.</button>
+      </div>
+    </div>
+    <div class="sg" id="libro-stats" style="margin-bottom:12px"></div>
+    <div class="card"><div class="tw"><table>
+      <thead><tr>
+        <th>Ref</th><th>Fecha</th><th>Tipo</th><th>Artículo</th>
+        <th>Contraparte</th><th>Coste</th><th>Venta</th><th>Beneficio</th>
+      </tr></thead>
+      <tbody id="tb-libro"></tbody>
+    </table></div></div>
+    <div id="libro-totals" style="margin-top:10px;padding:12px;background:var(--s2);border-radius:var(--r);font-size:.82rem"></div>
+  </div>
+  <div id="pg-quick" class="pg">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h2 style="font-size:1.1rem;font-weight:900">⚡ Modo Rápido</h2>
+      <div style="font-size:.75rem;color:var(--t2)" id="quick-fecha"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div class="qbig" onclick="openQV()" style="background:linear-gradient(135deg,rgba(34,212,143,.15),rgba(34,212,143,.03));border-color:var(--gr);padding:22px 12px">
+        <div class="qbig-ic">💰</div>
+        <div class="qbig-lbl" style="font-size:1.2rem">VENTA</div>
+        <div class="qbig-sub">Registrar venta</div>
+        <div class="qbig-key">V</div>
+      </div>
+      <div class="qbig" onclick="openQA()" style="background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(168,85,247,.03));border-color:var(--pu);padding:22px 12px">
+        <div class="qbig-ic">🛒</div>
+        <div class="qbig-lbl" style="font-size:1.2rem">COMPRA</div>
+        <div class="qbig-sub">Registrar compra</div>
+        <div class="qbig-key">C</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+      <div class="qbig" onclick="openQR()" style="background:linear-gradient(135deg,rgba(247,146,58,.15),rgba(247,146,58,.03));border-color:var(--or)">
+        <div class="qbig-ic">🔧</div>
+        <div class="qbig-lbl">REPARACIÓN</div>
+        <div class="qbig-sub">Registrar</div>
+        <div class="qbig-key">R</div>
+      </div>
+      <div class="qbig" onclick="go('cred',document.getElementById('nav-quick'))" style="background:linear-gradient(135deg,rgba(247,80,106,.15),rgba(247,80,106,.03));border-color:var(--rd)">
+        <div class="qbig-ic" id="qs-dbadge-ic">💳</div>
+        <div class="qbig-lbl">DEUDAS</div>
+        <div class="qbig-sub" id="qs-dsub">Ver créditos</div>
+        <div class="qbig-key">D</div>
+      </div>
+      <div class="qbig" onclick="go('tareas',document.getElementById('nav-quick'))" style="background:linear-gradient(135deg,rgba(247,183,49,.15),rgba(247,183,49,.03));border-color:var(--ye)">
+        <div class="qbig-ic">📝</div>
+        <div class="qbig-lbl">TAREAS</div>
+        <div class="qbig-sub" id="qs-tsub">Ver tareas</div>
+        <div class="qbig-key">T</div>
+      </div>
+    </div>
+    <div class="sg" style="grid-template-columns:repeat(auto-fit,minmax(100px,1fr));margin-bottom:12px" id="qs-stats"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="card">
+        <div class="ch" style="padding:8px 12px">
+          <h3 style="font-size:.8rem">💳 Deudas activas</h3>
+          <span id="qs-dtot" style="font-size:.75rem;font-weight:700;color:var(--rd)"></span>
+        </div>
+        <div id="qs-deudas" style="padding:6px 8px;max-height:140px;overflow-y:auto"></div>
+        <div style="padding:5px 10px;border-top:1px solid var(--bd)">
+          <button class="btn b-ac bsm" style="width:100%;justify-content:center;font-size:.72rem" onclick="om('mcr')">＋ Nuevo crédito</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch" style="padding:8px 12px">
+          <h3 style="font-size:.8rem">📝 Tareas pendientes</h3>
+          <span class="badge" id="qs-tbadge" style="background:var(--or)">0</span>
+        </div>
+        <div id="qs-tareas" style="padding:6px 8px;max-height:140px;overflow-y:auto"></div>
+        <div style="padding:5px 10px;border-top:1px solid var(--bd)">
+          <button class="btn b-ac bsm" style="width:100%;justify-content:center;font-size:.72rem" onclick="om('mt')">＋ Nueva tarea</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch" style="padding:8px 12px"><h3 style="font-size:.8rem">🕐 Operaciones de hoy</h3><span id="qs-hoy-tot" style="font-size:.75rem;font-weight:700;color:var(--gr)"></span></div>
+      <div id="qs-ops" style="padding:4px 6px"></div>
+    </div>
+  </div>
+  
   <div id="pg-informes" class="pg">
     <div class="ph">
       <h2>📈 Informes</h2>
@@ -686,8 +490,6 @@ select option{background:var(--s1)}
       <div class="card"><div class="ch"><h3>Gastos por categoría</h3></div><div class="cw"><canvas id="chg"></canvas></div></div>
     </div>
   </div>
-
-  <!-- DATABASE -->
   <div id="pg-db" class="pg">
     <div class="ph"><h2>🗄️ Base de datos</h2></div>
     <div id="db-info" style="padding:10px 13px;background:rgba(34,212,143,.1);border:1px solid rgba(34,212,143,.3);border-radius:var(--r);margin-bottom:10px;font-size:.76rem">
@@ -713,8 +515,6 @@ select option{background:var(--s1)}
     <div class="db-ac"><div style="font-size:1.4rem">🔄</div><div style="flex:1"><b style="font-size:.82rem">Copia de emergencia</b><div style="font-size:.7rem;color:var(--t2)">Descarga inmediata de todos los datos</div></div><button class="btn b-or" onclick="emergencyBackup()">Descargar ahora</button></div>
     <div class="db-ac"><div style="font-size:1.4rem">🗑️</div><div style="flex:1"><b style="font-size:.82rem">Reiniciar datos</b><div style="font-size:.7rem;color:var(--rd)">Elimina TODOS los datos</div></div><button class="btn b-rd" onclick="resetDB()">Reiniciar</button></div>
   </div>
-
-  <!-- CONFIG -->
   <div id="pg-cfg" class="pg">
     <div class="ph"><h2>⚙️ Configuración</h2></div>
     <div class="set-g">
@@ -775,35 +575,9 @@ select option{background:var(--s1)}
     </div>
   </div>
 
-  </div><!-- /content -->
-</div><!-- /main -->
-</div><!-- /app -->
-
-<!-- BOTTOM NAV -->
-<div id="bnav">
-  <button class="bn on" id="bn-d" onclick="mgo('dash',this)"><span class="bni">📊</span>Panel</button>
-  <button class="bn" id="bn-v" onclick="mgo('ventas',this)"><span class="bni">💰</span>Ventas</button>
-  <button class="bn" id="bn-a" onclick="mgo('compras',this)"><span class="bni">🛒</span>Compras</button>
-  <button class="bn" id="bn-r" onclick="mgo('reps',this)" style="position:relative"><span class="bni">🔧</span>Repars.<span class="b2" id="bnr2" style="display:none">0</span></button>
-  <button class="bn" id="bn-m" onclick="toggleMM(this)"><span class="bni">☰</span>Más</button>
-</div>
-<div id="mmenu">
-  <div class="mmg">
-    <div class="mmi" onclick="mgo('inv');closeMM()"><span>📦</span>Inventario</div>
-    <div class="mmi" onclick="mgo('cred');closeMM()"><span>💳</span>Crédito</div>
-    <div class="mmi" onclick="mgo('pedidos');closeMM()"><span>📋</span>Pedidos</div>
-    <div class="mmi" onclick="mgo('gastos');closeMM()"><span>💸</span>Gastos</div>
-    <div class="mmi" onclick="mgo('clientes');closeMM()"><span>👥</span>Clientes</div>
-    <div class="mmi" onclick="mgo('tareas');closeMM()"><span>📝</span>Tareas</div>
-    <div class="mmi" onclick="mgo('qr');closeMM()"><span>📷</span>QR</div>
-    <div class="mmi" onclick="mgo('informes');closeMM()"><span>📈</span>Informes</div>
-    <div class="mmi" onclick="mgo('db');closeMM()"><span>🗄️</span>Datos</div>
-    <div class="mmi" onclick="mgo('cfg');closeMM()"><span>⚙️</span>Config.</div>
-    <div class="mmi" onclick="doLock()"><span>🔒</span>Bloquear</div>
-    <div class="mmi" onclick="closeMM()"><span>✕</span>Cerrar</div>
   </div>
 </div>
-<!-- WORKER OVERLAY -->
+</div>
 <div id="wov">
   <div id="wtop">
     <div style="font-size:.92rem;font-weight:800"><span style="color:var(--ac)">Second</span>Shop <span style="font-size:.72rem;color:var(--or)">🧑‍💼 Empleado</span></div>
@@ -822,10 +596,24 @@ select option{background:var(--s1)}
     <div id="wbody"></div>
   </div>
 </div>
-
-<!-- TOAST -->
 <div id="toast"></div>
-<!-- MODALS -->
+<div id="fab">
+  <div class="fab-menu" id="fab-menu">
+    <div class="fab-item" onclick="openQV()">
+      <span class="fab-lbl">💰 Venta rápida</span>
+      <button class="fab-btn" style="background:#22d48f;color:#0d0f18">💰</button>
+    </div>
+    <div class="fab-item" onclick="openQA()">
+      <span class="fab-lbl">🛒 Compra rápida</span>
+      <button class="fab-btn" style="background:#f7923a;color:#0d0f18">🛒</button>
+    </div>
+    <div class="fab-item" onclick="openQR()">
+      <span class="fab-lbl">🔧 Reparación rápida</span>
+      <button class="fab-btn" style="background:#4f8ef7;color:#fff">🔧</button>
+    </div>
+  </div>
+  <button class="fab-main" id="fab-main" onclick="toggleFAB()" title="Entrada rápida">⚡</button>
+</div>
 <div class="ov" id="mv"><div class="modal">
   <div class="mh"><h3>💰 Nueva Venta</h3><button class="mx" onclick="cm('mv')">✕</button></div>
   <div class="fgrid">
@@ -994,8 +782,102 @@ select option{background:var(--s1)}
   <input type="hidden" id="tedit" value="">
   <div class="ma"><button class="btn b-gh" onclick="cm('mt')">Cancelar</button><button class="btn b-ac" onclick="saveT()">💾 Guardar</button></div>
 </div></div>
-
-<!-- EDIT MODAL VENTA -->
+<div class="ov" id="mqv"><div class="modal" style="max-width:420px">
+  <div class="mh" style="padding:10px 14px">
+    <h3 style="font-size:1rem">⚡ Venta Rápida</h3>
+    <button class="mx" onclick="cm('mqv')">✕</button>
+  </div>
+  <div style="padding:10px 14px">
+    
+    <div id="qv-s1">
+      <div style="font-size:.72rem;color:var(--t2);font-weight:700;margin-bottom:8px;text-transform:uppercase">1️⃣ Categoría</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px" id="qv-cats"></div>
+    </div>
+    
+    <div id="qv-s2" style="display:none">
+      <div style="font-size:.72rem;color:var(--t2);font-weight:700;margin-bottom:8px;text-transform:uppercase">2️⃣ Producto & Precio</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px">
+        <input id="qv-art" placeholder="Nombre del producto..." style="flex:2;font-size:.95rem;padding:10px" oninput="sugQV(this.value)" onkeydown="if(event.key==='Tab'||event.key==='Enter'){event.preventDefault();document.getElementById('qv-prix').focus()}">
+        <input id="qv-prix" type="number" placeholder="€" style="flex:1;font-size:1.1rem;font-weight:700;padding:10px;text-align:center" onkeydown="if(event.key==='Enter'){document.getElementById('qv-cout').focus()}">
+      </div>
+      <div id="qv-sug2" class="sug"></div>
+      <div style="display:flex;gap:6px;margin-bottom:8px">
+        <input id="qv-cout" type="number" placeholder="Coste €" style="flex:1;font-size:.9rem;padding:9px" oninput="qvBen()" onkeydown="if(event.key==='Enter'){document.getElementById('qv-cli').focus()}">
+        <input id="qv-cli" placeholder="Cliente (opcional)" style="flex:2;font-size:.9rem;padding:9px" onkeydown="if(event.key==='Enter'){qvSave()}">
+      </div>
+      <div id="qv-ben-preview" style="display:none;padding:6px 10px;background:var(--s2);border-radius:var(--r2);font-size:.78rem;margin-bottom:8px;text-align:center"></div>
+      
+      <div style="font-size:.72rem;color:var(--t2);font-weight:700;margin-bottom:6px">3️⃣ Pago</div>
+      <div style="display:flex;gap:5px;margin-bottom:10px" id="qv-pays">
+        <button class="qpay on" onclick="selQPay('Efectivo',this)">💵 Efectivo</button>
+        <button class="qpay" onclick="selQPay('Tarjeta',this)">💳 Tarjeta</button>
+        <button class="qpay" onclick="selQPay('Transferencia',this)">🏦 Transfer.</button>
+        <button class="qpay" onclick="selQPay('Crédito',this)">📋 Crédito</button>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn b-gh" style="flex:1" onclick="qvBack()">◀ Atrás</button>
+        <button class="btn b-ac" style="flex:2;justify-content:center;font-size:.95rem" onclick="qvSave()">✅ GUARDAR</button>
+        <button class="btn b-gh" onclick="qvSavePrint()">🖨️</button>
+      </div>
+    </div>
+  </div>
+</div></div>
+<div class="ov" id="mqa"><div class="modal" style="max-width:420px">
+  <div class="mh" style="padding:10px 14px">
+    <h3 style="font-size:1rem">⚡ Compra Rápida</h3>
+    <button class="mx" onclick="cm('mqa')">✕</button>
+  </div>
+  <div style="padding:10px 14px">
+    <div style="font-size:.72rem;color:var(--t2);font-weight:700;margin-bottom:8px;text-transform:uppercase">Categoría</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px" id="qa-cats"></div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <input id="qa-art" placeholder="Producto..." style="flex:2;font-size:.95rem;padding:10px" onkeydown="if(event.key==='Enter')document.getElementById('qa-prix').focus()">
+      <input id="qa-prix" type="number" placeholder="€" style="flex:1;font-size:1.1rem;font-weight:700;padding:10px;text-align:center" onkeydown="if(event.key==='Enter')document.getElementById('qa-nom').focus()">
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <input id="qa-nom" placeholder="Vendedor (opcional)" style="flex:2;padding:9px" onkeydown="if(event.key==='Enter')document.getElementById('qa-dni').focus()">
+      <input id="qa-dni" placeholder="DNI" style="flex:1;padding:9px;font-family:monospace" onkeydown="if(event.key==='Enter')qaSave()">
+    </div>
+    <input id="qa-serie" placeholder="IMEI / Serie (opcional)" style="width:100%;padding:9px;margin-bottom:10px">
+    <select id="qa-etat" style="width:100%;padding:9px;margin-bottom:10px">
+      <option>Funciona bien</option><option>A reparar</option><option>Incompleto</option><option>Para piezas</option>
+    </select>
+    <div style="display:flex;gap:6px">
+      <button class="btn b-gh" style="flex:1" onclick="cm('mqa')">Cancelar</button>
+      <button class="btn b-or" style="flex:2;justify-content:center;font-size:.95rem" onclick="qaSave()">✅ GUARDAR COMPRA</button>
+    </div>
+  </div>
+</div></div>
+<div class="ov" id="mqr"><div class="modal" style="max-width:420px">
+  <div class="mh" style="padding:10px 14px">
+    <h3 style="font-size:1rem">⚡ Reparación Rápida</h3>
+    <button class="mx" onclick="cm('mqr')">✕</button>
+  </div>
+  <div style="padding:10px 14px">
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <input id="qr-dev" placeholder="Dispositivo / Modelo..." style="flex:2;font-size:.95rem;padding:10px" onkeydown="if(event.key==='Enter')document.getElementById('qr-cli').focus()">
+      <input id="qr-cout" type="number" placeholder="€" style="flex:1;font-size:1.1rem;font-weight:700;padding:10px;text-align:center" onkeydown="if(event.key==='Enter')qrSave()">
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      <input id="qr-cli" placeholder="Cliente..." style="flex:2;padding:9px" onkeydown="if(event.key==='Enter')document.getElementById('qr-tel').focus()">
+      <input id="qr-tel" type="tel" placeholder="Teléfono" style="flex:1;padding:9px" onkeydown="if(event.key==='Enter')qrSave()">
+    </div>
+    <input id="qr-prob2" placeholder="Avería / Problema..." style="width:100%;padding:9px;margin-bottom:8px">
+    
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+      <button class="qpay" onclick="selQAv('Pantalla',this)">📱 Pantalla</button>
+      <button class="qpay" onclick="selQAv('Batería',this)">🔋 Batería</button>
+      <button class="qpay" onclick="selQAv('Carga',this)">🔌 Carga</button>
+      <button class="qpay" onclick="selQAv('Software',this)">💻 Software</button>
+      <button class="qpay" onclick="selQAv('Cámara',this)">📷 Cámara</button>
+      <button class="qpay" onclick="selQAv('Otro',this)">➕ Otro</button>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button class="btn b-gh" style="flex:1" onclick="cm('mqr')">Cancelar</button>
+      <button class="btn b-gr" style="flex:2;justify-content:center;font-size:.95rem" onclick="qrSave()">✅ REGISTRAR</button>
+    </div>
+  </div>
+</div></div>
 <div class="ov" id="meditv"><div class="modal" style="max-width:580px">
   <div class="mh"><h3>✏️ Editar Venta</h3><button class="mx" onclick="cm('meditv')">✕</button></div>
   <div class="fgrid">
@@ -1014,8 +896,6 @@ select option{background:var(--s1)}
   <input type="hidden" id="ev-id">
   <div class="ma"><button class="btn b-gh" onclick="cm('meditv')">Cancelar</button><button class="btn b-ac" onclick="updateV()">💾 Guardar cambios</button></div>
 </div></div>
-
-<!-- EDIT MODAL COMPRA -->
 <div class="ov" id="medita"><div class="modal" style="max-width:580px">
   <div class="mh"><h3>✏️ Editar Compra</h3><button class="mx" onclick="cm('medita')">✕</button></div>
   <div class="fgrid">
@@ -1036,8 +916,6 @@ select option{background:var(--s1)}
   <input type="hidden" id="ea-id">
   <div class="ma"><button class="btn b-gh" onclick="cm('medita')">Cancelar</button><button class="btn b-or" onclick="updateA()">💾 Guardar cambios</button></div>
 </div></div>
-
-<!-- EDIT MODAL REPARACION -->
 <div class="ov" id="meditr"><div class="modal" style="max-width:580px">
   <div class="mh"><h3>✏️ Editar Reparación</h3><button class="mx" onclick="cm('meditr')">✕</button></div>
   <div class="fgrid">
@@ -1057,8 +935,6 @@ select option{background:var(--s1)}
   <input type="hidden" id="er-id">
   <div class="ma"><button class="btn b-gh" onclick="cm('meditr')">Cancelar</button><button class="btn b-gr" onclick="updateR()">💾 Guardar cambios</button></div>
 </div></div>
-
-<!-- PRINT MODAL -->
 <div class="ov" id="mprint"><div class="modal" style="max-width:550px">
   <div class="mh"><h3>🖨️ Imprimir documento</h3><button class="mx" onclick="cm('mprint')">✕</button></div>
   <div id="ps1">
@@ -1076,6 +952,7 @@ select option{background:var(--s1)}
       <div class="doc-opt on" onclick="selDoc('f',this)"><span class="di">🧾</span><div class="dl">Factura</div><div class="ds">Con IVA</div></div>
       <div class="doc-opt" onclick="selDoc('a',this)"><span class="di">📄</span><div class="dl">Albarán</div><div class="ds">Sin facturar</div></div>
       <div class="doc-opt" onclick="selDoc('t',this)"><span class="di">🎫</span><div class="dl">Ticket</div><div class="ds">Formato caja</div></div>
+      <div class="doc-opt" onclick="selDoc('ts',this)"><span class="di">🎫</span><div class="dl">Ticket s/IVA</div><div class="ds">Sin impuestos</div></div>
     </div>
   </div>
   <div id="ps2" style="display:none"><div id="pdoc"></div></div>
@@ -1087,6 +964,14 @@ select option{background:var(--s1)}
     <button class="btn b-gh" onclick="backP()">← Atrás</button>
     <button class="btn b-gh" onclick="sendWA()">📱 WA</button>
     <button class="btn b-ac" onclick="doPrint()">🖨️ Imprimir</button>
+  </div>
+</div></div>
+<div class="ov" id="mdocbu"><div class="modal" style="max-width:620px">
+  <div class="mh"><h3>📄 Documento de Compra de Bien Usado</h3><button class="mx" onclick="cm('mdocbu')">✕</button></div>
+  <div id="doc-bu-content"></div>
+  <div class="ma">
+    <button class="btn b-gh" onclick="cm('mdocbu')">Cerrar</button>
+    <button class="btn b-ac" onclick="printDocBU()">🖨️ Imprimir A4</button>
   </div>
 </div></div>
 
@@ -1244,8 +1129,6 @@ function updateSyncIcon(state){
     el.textContent = msgs[state] || state;
   }
 }
-
-
 // ══ CONFIG & DATA ══
 const CATS=[{id:'nev',l:'Nevera',i:'🧊'},{id:'lav',l:'Lavadora',i:'🫧'},{id:'lvj',l:'Lavavajillas',i:'🍽️'},{id:'mic',l:'Microondas',i:'📡'},{id:'plr',l:'Plancha ropa',i:'👔'},{id:'plp',l:'Plancha pelo',i:'💇'},{id:'vit',l:'Vitrocerámica',i:'🔥'},{id:'hor',l:'Horno gas',i:'🍳'},{id:'car',l:'Cargador',i:'🔌'},{id:'mov',l:'Móvil',i:'📱'},{id:'mue',l:'Muebles',i:'🪑'},{id:'rec',l:'Recambio',i:'🔩'},{id:'tv',l:'TV/Pantalla',i:'📺'},{id:'ord',l:'Ordenador',i:'💻'},{id:'con',l:'Consola',i:'🎮'},{id:'tab',l:'Tablet',i:'📟'},{id:'otr',l:'Otro',i:'➕'}];
 const RE=['Recibido','Diagnóstico','En reparación','Listo','Entregado'];
@@ -1354,7 +1237,7 @@ function doLogin(){
   } else {
     document.getElementById('app').style.display='flex';
     document.getElementById('wov').classList.remove('on');
-    renderDash();
+    go('quick', document.getElementById('nav-quick'));
     updateB();
   }
   toast('Bienvenido '+(role==='owner'?'👑 Propietario':'🧑‍💼 Empleado'),'s');
@@ -1401,7 +1284,7 @@ function go(id,el){
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
   document.getElementById('pg-'+id).classList.add('on');
   if(el){el.classList.add('on');document.getElementById('tbt').textContent=el.querySelector('span:last-child')?.textContent||id;}
-  const R={dash:renderDash,ventas:renderV,compras:renderA,reps:renderR,inv:renderI,cred:renderCR,pedidos:renderP,gastos:renderG,clientes:renderCLI,tareas:renderT,informes:renderInf,db:renderDB,cfg:loadCFG};
+  const R={dash:renderDash,quick:renderQuick,ventas:renderV,compras:renderA,reps:renderR,inv:renderI,cred:renderCR,pedidos:renderP,gastos:renderG,clientes:renderCLI,tareas:renderT,informes:renderInf,rebu:renderREBU,libro:renderLibro,db:renderDB,cfg:loadCFG};
   if(R[id])R[id]();
 }
 function om(id){document.getElementById(id).classList.add('on');}
@@ -1470,11 +1353,14 @@ function saveV(doPrint){
   toast('✅ '+v.ref+' · +'+fm(v.ben));
   if(doPrint)openPrint(v);
 }
+// Load chunk 2 after login screen renders
+setTimeout(function(){
+
 function renderV(){
   const tb=document.getElementById('tbv');if(!DB.v.length){tb.innerHTML=emR(10,'💰','Sin ventas aún');return;}
   const PB={Efectivo:'bg',Tarjeta:'bb',Transferencia:'bp',Crédito:'bo',Cheque:'by'};
   tb.innerHTML=DB.v.map((v,i)=>`<tr data-d="${v.date}">
-    <td class="mono" style="font-size:.66rem">${v.ref}</td><td class="mono" style="font-size:.69rem">${fd(v.date)}</td>
+    <td class="mono" style="font-size:.62rem"><div>${v.ref}</div>${v.serie&&DB.a.find(a=>a.serie===v.serie)?`<div style="color:var(--ac);font-weight:700;font-size:.6rem">${ensureDevNum(DB.a.find(a=>a.serie===v.serie))}</div>`:""}</td><td class="mono" style="font-size:.69rem">${fd(v.date)}</td>
     <td><div class="tdm">${v.art}</div>${v.serie?`<div class="tds">${v.serie}</div>`:''}</td>
     <td><span class="bx bb" style="font-size:.59rem">${v.cat}</span></td>
     <td>${v.cli}</td><td class="mono">${fm(v.cout)}</td>
@@ -1660,13 +1546,13 @@ function renderA(){
   const tb=document.getElementById('tba');if(!DB.a.length){tb.innerHTML=emR(9,'🛒','Sin compras aún');return;}
   const EB={'Funciona bien':'bg','A reparar':'bo','Incompleto':'bk','Para piezas':'br'};
   tb.innerHTML=DB.a.map((a,i)=>`<tr data-d="${a.date}">
-    <td class="mono" style="font-size:.66rem">${a.ref}</td><td class="mono" style="font-size:.69rem">${fd(a.date)}</td>
+    <td class="mono" style="font-size:.62rem"><div>${a.ref}</div><div style="color:var(--ac);font-weight:700">${ensureDevNum(a)}</div></td><td class="mono" style="font-size:.69rem">${fd(a.date)}</td>
     <td><div class="tdm">${a.art}</div>${a.nom?`<div class="tds">👤 ${a.nom}</div>`:''}</td>
     <td><span class="bx bb">${a.cat}</span></td><td>${a.nom||'—'}</td>
     <td class="mono" style="font-size:.67rem">${a.dni||'—'}</td>
     <td class="mono">${fm(a.prix)}</td>
     <td><span class="bx ${EB[a.etat]||'bk'}">${a.etat}</span></td>
-    <td style="white-space:nowrap"><button class="bic" onclick="printC(${i})">🖨️</button> <button class="bic" onclick="openEditA(${i})">✏️</button> <button class="bic" onclick="delA(${i})">🗑</button></td>
+    <td style="white-space:nowrap"><button class="bic" onclick="printDocCompra(${i})">📄</button> <button class="bic" onclick="printC(${i})">🖨️</button> <button class="bic" onclick="openEditA(${i})">✏️</button> <button class="bic" onclick="delA(${i})">🗑</button></td>
   </tr>`).join('');
 }
 function delA(i){if(confirm('¿Eliminar?')){DB.a.splice(i,1);save();renderA();}}
@@ -1898,8 +1784,6 @@ function renderW(tab){
 function wSaveV(){const art=document.getElementById('wvart')?.value.trim();if(!art){toast('¿Producto?','e');return;}const cout=parseFloat(document.getElementById('wvcout')?.value)||0;const prix=parseFloat(document.getElementById('wvprix')?.value)||0;const qty=parseInt(document.getElementById('wvqty')?.value)||1;const serie=document.getElementById('wvserie')?.value.trim()||'';const pay=document.getElementById('wvpay')?.value||'Efectivo';const cat=SC['wcv']?CATS.find(c=>c.id===SC['wcv'])?.l||'Otro':'Otro';const vDateVal=document.getElementById('vdate')?.value||today();const vHoraVal=document.getElementById('vhora')?.value||'';const v={id:uid(),ref:'V-'+String(DB.nid-1).padStart(4,'0'),date:vDateVal,hora:vHoraVal,art,cat,cli:document.getElementById('wvcli')?.value.trim()||'—',cout,prix,qty,ben:(prix-cout)*qty,pay,serie,notes:document.getElementById('wvnotes')?.value.trim()||''};DB.v.unshift(v);save();['wvart','wvcli','wvcout','wvprix','wvserie','wvnotes'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});const qq=document.getElementById('wvqty');if(qq)qq.value='1';toast('✅ Venta registrada: '+v.ref);renderW('venta');}
 function wSaveA(){const art=document.getElementById('waart')?.value.trim();if(!art){toast('¿Producto?','e');return;}const prix=parseFloat(document.getElementById('waprix')?.value)||0;const cat=SC['wca']?CATS.find(c=>c.id===SC['wca'])?.l||'Otro':'Otro';const aDateVal=document.getElementById('adate')?.value||today();const aHoraVal=document.getElementById('ahora')?.value||'';const a={id:uid(),ref:'A-'+String(DB.nid-1).padStart(4,'0'),date:aDateVal,hora:aHoraVal,art,cat,serie:document.getElementById('waserie')?.value.trim()||'',prix,nom:document.getElementById('wanom')?.value.trim()||'',dni:document.getElementById('wdni')?.value.trim()||'',telv:document.getElementById('watel')?.value.trim()||'',etat:document.getElementById('waetat')?.value||'Funciona bien',pv:0,qty:1,notes:document.getElementById('wanotes')?.value.trim()||''};DB.a.unshift(a);if(CFG.autoinv)DB.i.unshift({id:uid(),ref:a.ref,art,cat,serie:a.serie,cout:prix,pv:0,etat:'Disponible',qty:1,date:today()});save();['waart','wanom','wdni','watel','waprix','waserie','wanotes'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});toast('✅ Compra registrada: '+a.ref);renderW('compra');}
 function wSaveR(){const dev=document.getElementById('wrdev')?.value.trim();if(!dev){toast('¿Dispositivo?','e');return;}const cat=SC['wcr']?CATS.find(c=>c.id===SC['wcr'])?.l||'Otro':'Otro';const rHoraVal=document.getElementById('rhora')?.value||'';const r={id:uid(),ref:'REP-'+String(DB.nid-1).padStart(4,'0'),date:today(),hora:rHoraVal,dev,cat,imei:document.getElementById('wrimei')?.value.trim()||'',cli:document.getElementById('wrcli')?.value.trim()||'—',tel:document.getElementById('wrtel')?.value.trim()||'',cat2:document.getElementById('wrcat')?.value||'Otro',prob:document.getElementById('wrprob')?.value.trim()||'',cout:parseFloat(document.getElementById('wrcout')?.value)||0,liv:document.getElementById('wrdate')?.value||'',notes:'',ei:0,log:[]};DB.r.unshift(r);save();updateB();['wrdev','wrimei','wrcli','wrtel','wrprob','wrcout','wrdate'].forEach(x=>{const el=document.getElementById(x);if(el)el.value='';});toast('✅ Reparación: '+r.ref);renderW('rep');}
-
-
 // ══ QR SCANNER & GENERATOR ══
 let scanStream = null;
 let qrObj = null;
@@ -2028,6 +1912,120 @@ function procScan(val){
   }
   toast('📱 Código procesado','i');
 }
+// ══ DOCUMENTO DE COMPRA DE BIEN USADO ══
+function printDocCompra(i){
+  const a = DB.a[i];
+  const num = ensureDevNum(a);
+  const docNum = 'EH-C-' + new Date(a.date+'T12:00').getFullYear() + '-' + String(a.id).padStart(3,'0');
+  const shop = CFG.shop || 'Electro Hogar Segundamano';
+  const [day,mon,yr2] = fd(a.date).split('/');
+
+  document.getElementById('doc-bu-content').innerHTML = `
+  <div id="doc-bu" style="font-family:Arial,sans-serif;font-size:11pt;color:#000;padding:8px">
+    
+    <div style="text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:14px">
+      <div style="font-size:18pt;font-weight:900">⚡ ${shop}</div>
+      <div style="font-size:10pt;color:#555">${CFG.addr||'Dirección: _________________________'}</div>
+      <div style="font-size:10pt;color:#555">Tel: ${CFG.tel||'___________'} · Email: ${CFG.email||'___________'}</div>
+      ${CFG.cif?'<div style="font-size:10pt">NIF: <b>'+CFG.cif+'</b></div>':'<div style="font-size:10pt">NIF: ______________________________</div>'}
+    </div>
+    
+    <div style="text-align:center;margin-bottom:14px">
+      <div style="font-size:14pt;font-weight:900;letter-spacing:1px">DOCUMENTO DE COMPRA DE BIEN USADO</div>
+      <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10pt">
+        <div><b>N.º DOCUMENTO:</b> <span style="color:#1a5fa8;font-weight:700">${docNum}</span></div>
+        <div><b>Fecha de compra:</b> ${day} / ${mon} / ${yr2}</div>
+      </div>
+    </div>
+    
+    <div style="border:1px solid #ccc;border-radius:6px;padding:10px;margin-bottom:12px">
+      <div style="font-weight:900;font-size:11pt;background:#f0f0f0;padding:4px 8px;margin:-10px -10px 10px;border-radius:5px 5px 0 0">DATOS DEL VENDEDOR</div>
+      <table style="width:100%;font-size:10pt">
+        <tr><td style="width:45%;padding:4px 0"><b>Nombre y apellidos:</b></td><td style="border-bottom:1px solid #999;padding:4px 4px">${a.nom||'______________________________'}</td></tr>
+        <tr><td style="padding:4px 0"><b>DNI/NIE/Pasaporte:</b></td><td style="border-bottom:1px solid #999;padding:4px 4px;font-family:monospace;font-weight:700">${a.dni||'________________________________________'}</td></tr>
+        <tr><td style="padding:4px 0"><b>Dirección:</b></td><td style="border-bottom:1px solid #999;padding:4px 4px">________________________________________</td></tr>
+        <tr><td style="padding:4px 0"><b>Teléfono:</b></td><td style="border-bottom:1px solid #999;padding:4px 4px">${a.telv||'________________________________________'}</td></tr>
+      </table>
+    </div>
+    
+    <div style="border:1px solid #ccc;border-radius:6px;padding:10px;margin-bottom:12px">
+      <div style="font-weight:900;font-size:11pt;background:#f0f0f0;padding:4px 8px;margin:-10px -10px 10px;border-radius:5px 5px 0 0">DATOS DEL BIEN</div>
+      <table style="width:100%;font-size:10pt">
+        <tr>
+          <td style="width:45%;padding:4px 0"><b>Tipo de aparato:</b></td>
+          <td style="border-bottom:1px solid #999;padding:4px 4px;font-weight:600">${a.cat||'__________________________'}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0"><b>Descripción/Modelo:</b></td>
+          <td style="border-bottom:1px solid #999;padding:4px 4px;font-weight:600">${a.art||'__________________________'}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0"><b>N.º de serie/IMEI:</b></td>
+          <td style="border-bottom:1px solid #999;padding:4px 4px;font-family:monospace;font-weight:700">${a.serie||'_____________________'}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0"><b>Estado:</b></td>
+          <td style="border-bottom:1px solid #999;padding:4px 4px">${a.etat||'Usado'}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0"><b>Accesorios/Notas:</b></td>
+          <td style="border-bottom:1px solid #999;padding:4px 4px">${a.notes||'_______________________'}</td>
+        </tr>
+      </table>
+    </div>
+    
+    <div style="border:1px solid #ccc;border-radius:6px;padding:10px;margin-bottom:12px">
+      <div style="font-weight:900;font-size:11pt;background:#f0f0f0;padding:4px 8px;margin:-10px -10px 10px;border-radius:5px 5px 0 0">PRECIO DE COMPRA</div>
+      <div style="display:flex;align-items:center;gap:20px;margin:10px 0;font-size:12pt">
+        <span><b>Precio acordado:</b></span>
+        <span style="font-size:16pt;font-weight:900;color:#c00">${a.prix} €</span>
+      </div>
+      <div style="font-size:10pt"><b>Forma de pago:</b></div>
+      <div style="display:flex;gap:20px;margin-top:6px;font-size:10pt">
+        <div>☐ Efectivo</div>
+        <div>☐ Transferencia bancaria</div>
+        <div>☐ Otro: __________________</div>
+      </div>
+    </div>
+    
+    <div style="border:1px solid #ccc;border-radius:6px;padding:10px;margin-bottom:12px;font-size:9.5pt;background:#fffef0">
+      <div style="font-weight:900;margin-bottom:6px">DECLARACIÓN</div>
+      <p style="margin:0 0 6px">El vendedor declara entregar el bien descrito anteriormente al comprador en la fecha indicada, por el precio acordado entre ambas partes.</p>
+      <p style="margin:0">El vendedor declara actuar como <b>particular</b> y no como empresario o profesional respecto de esta operación.</p>
+    </div>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px">
+      <div style="border:1px solid #ccc;border-radius:6px;padding:12px;text-align:center">
+        <div style="font-weight:900;margin-bottom:8px">VENDEDOR</div>
+        <div style="font-size:9.5pt;margin-bottom:4px">Nombre: <span style="border-bottom:1px solid #000;display:inline-block;width:120px">${a.nom||''}</span></div>
+        <div style="height:50px;border-bottom:1px solid #000;margin:10px 10px 4px"></div>
+        <div style="font-size:8.5pt;color:#666">Firma y fecha</div>
+      </div>
+      <div style="border:1px solid #ccc;border-radius:6px;padding:12px;text-align:center">
+        <div style="font-weight:900;margin-bottom:8px">COMPRADOR</div>
+        <div style="font-size:9.5pt;margin-bottom:4px"><b>${shop}</b></div>
+        <div style="height:50px;border-bottom:1px solid #000;margin:10px 10px 4px"></div>
+        <div style="font-size:8.5pt;color:#666">Sello y firma</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:10px;font-size:8pt;color:#999;border-top:1px dashed #ccc;padding-top:6px">
+      Documento generado por SecondShop PRO · ${shop} · ${CFG.tel||''} · Ref: ${num}
+    </div>
+  </div>`;
+  om('mdocbu');
+}
+
+function printDocBU(){
+  const docEl = document.getElementById('doc-bu');
+  if(!docEl){ toast('Error al generar documento','e'); return; }
+  const w = window.open('','_blank');
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Documento Compra</title>'
+    + '<style>body{margin:12mm;font-family:Arial,sans-serif}@page{size:A4;margin:12mm}</style>'
+    + '</head><body>' + docEl.outerHTML + '</body></html>';
+  w.document.write(html);
+  w.document.close();
+  setTimeout(()=>{ w.print(); }, 600);
+}
 
 function qrQuick(type){
   const imei = document.getElementById('qr-manual')?.value.trim() || '';
@@ -2130,9 +2128,6 @@ function printQR(){
   w.document.close();
   setTimeout(()=>{ w.print(); },500);
 }
-
-
-
 function quickNewVenta(){
   const imei = document.getElementById('qr-manual').value.trim();
   if(imei) document.getElementById('vserie').value = imei;
@@ -2151,8 +2146,6 @@ function quickNewRep(){
   go('reps', document.querySelectorAll('.ni')[4]);
   om('mr');
 }
-
-
 // ══ EDIT FUNCTIONS ══
 
 // ─ EDIT VENTA ─
@@ -2369,10 +2362,583 @@ function prefillVenta(art, serie){
 function setFormDate(inputId){
   document.getElementById(inputId).value = today();
 }
+// ══ NÚMERO DE DISPOSITIVO EH-XXXX-NNN ══
+function genDevNum(){
+  const yr = new Date().getFullYear();
+  const n = String(DB.nid).padStart(3,'0');
+  return 'EH-'+yr+'-'+n;
+}
 
+// Auto-assign device number to compras without it
+function ensureDevNum(a){
+  if(!a.devnum) a.devnum = 'EH-'+new Date(a.date+'T12:00').getFullYear()+'-'+String(a.id).padStart(3,'0');
+  return a.devnum;
+}
 
+// Load chunk 3 after app is interactive  
+setTimeout(function(){
 
+// ══ REBU ══
+function renderREBU(){
+  const tbody = document.getElementById('tb-rebu');
+  if(!tbody) return;
+  const data = DB.a.filter(a=>a.nom||a.dni); // compras de particulares
+  if(!data.length){
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><div class="ei">📋</div><p>Sin entradas REBU — registra compras de particulares</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map((a,i)=>{
+    const num = ensureDevNum(a);
+    return `<tr>
+      <td class="mono" style="font-weight:700;color:var(--ac)">${num}</td>
+      <td class="mono">${fd(a.date)}</td>
+      <td><div class="tdm">${a.art}</div>${a.serie?`<div class="tds mono">${a.serie}</div>`:''}</td>
+      <td class="mono" style="font-size:.68rem">${a.serie||'—'}</td>
+      <td><div class="tdm">${a.nom||'—'}</div>${a.telv?`<div class="tds">📞 ${a.telv}</div>`:''}</td>
+      <td class="mono" style="font-size:.7rem">${a.dni||'—'}</td>
+      <td class="mono neg">-${fm(a.prix)}</td>
+      <td><span class="bx ${a.etat==='Funciona bien'?'bg':a.etat==='A reparar'?'bo':'bk'}">${a.etat}</span></td>
+    </tr>`;
+  }).join('');
+}
 
+function expREBU(){
+  const data = DB.a;
+  let csv = "Num.REBU,Fecha,Articulo,Categoria,IMEI.Serie,Vendedor,DNI.NIE,Telefono,Precio,Estado\n";
+  data.forEach(a=>{
+    const num = ensureDevNum(a);
+    csv += `${num},${a.date},"${a.art}","${a.cat||''}","${a.serie||''}","${a.nom||''}","${a.dni||''}","${a.telv||''}",${a.prix},"${a.etat||''}"
+`;
+  });
+  const blob = new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const el = document.createElement('a');
+  el.href = url; el.download = 'REBU_ElectroHogar_'+today()+'.csv'; el.click();
+  toast('📊 REBU exportado','s');
+}
+
+function printREBU(){
+  const tbody = document.getElementById('tb-rebu');
+  if(!tbody || !tbody.innerHTML.trim()){ toast('Sin datos REBU','e'); return; }
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head>
+  <meta charset="UTF-8">
+  <title>REBU — Electro Hogar</title>
+  <style>
+    body{font-family:Arial,sans-serif;font-size:10pt;margin:15mm}
+    h1{font-size:13pt;margin-bottom:3px}
+    .sub{font-size:9pt;color:#666;margin-bottom:10px}
+    table{width:100%;border-collapse:collapse;font-size:8.5pt}
+    th{background:#333;color:#fff;padding:6px 7px;text-align:left;font-size:8pt}
+    td{padding:5px 7px;border-bottom:1px solid #ddd}
+    @page{size:A4 landscape;margin:12mm}
+  </style></head><body>
+  <h1>📋 Registro de Bienes Usados (REBU)</h1>
+  <p class="sub">Electro Hogar Segundamano · ${new Date().toLocaleDateString('es-ES')}</p>
+  <table>
+    <thead><tr>
+      <th>N° REBU</th><th>Fecha</th><th>Artículo</th>
+      <th>IMEI/Serie</th><th>Vendedor</th><th>DNI/NIE</th>
+      <th>Precio</th><th>Estado</th>
+    </tr></thead>
+    <tbody>${tbody.innerHTML}</tbody>
+  </table>
+  </body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(), 600);
+}
+
+// ══ LIBRO REGISTRO ══
+function renderLibro(){
+  const yr = document.getElementById('libro-yr')?.value || new Date().getFullYear().toString();
+  const tipo = document.getElementById('libro-tipo')?.value || '';
+
+  // Populate year selector
+  const yrs = new Set();
+  [...DB.v,...DB.a,...DB.r].forEach(x=>{if(x.date)yrs.add(x.date.slice(0,4));});
+  if(!yrs.size) yrs.add(new Date().getFullYear().toString());
+  const yrSel = document.getElementById('libro-yr');
+  if(yrSel && !yrSel.options.length){
+    yrSel.innerHTML = [...yrs].sort().reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
+  }
+
+  // Build combined operations list
+  let ops = [];
+
+  // Compras
+  if(!tipo || tipo==='compra'){
+    DB.a.filter(a=>a.date?.startsWith(yr)).forEach(a=>{
+      ops.push({
+        ref: ensureDevNum(a),
+        date: a.date,
+        tipo: 'compra',
+        art: a.art,
+        contra: a.nom||'—',
+        cout: a.prix,
+        venta: 0,
+        ben: -a.prix,
+        obj: a
+      });
+    });
+  }
+
+  // Ventas
+  if(!tipo || tipo==='venta'){
+    DB.v.filter(v=>v.date?.startsWith(yr)).forEach(v=>{
+      // Find matching compra by IMEI
+      const compra = v.serie ? DB.a.find(a=>a.serie===v.serie) : null;
+      const devnum = compra ? ensureDevNum(compra) : v.ref;
+      ops.push({
+        ref: devnum,
+        date: v.date,
+        tipo: 'venta',
+        art: v.art,
+        contra: v.cli||'—',
+        cout: v.cout||0,
+        venta: v.prix*(v.qty||1),
+        ben: v.ben,
+        obj: v
+      });
+    });
+  }
+
+  // Reparaciones
+  if(!tipo || tipo==='rep'){
+    DB.r.filter(r=>r.date?.startsWith(yr)).forEach(r=>{
+      const compra = r.imei ? DB.a.find(a=>a.serie===r.imei) : null;
+      const devnum = compra ? ensureDevNum(compra) : r.ref;
+      ops.push({
+        ref: devnum,
+        date: r.date,
+        tipo: 'rep',
+        art: r.dev,
+        contra: r.cli||'—',
+        cout: r.cout||0,
+        venta: r.cout||0,
+        ben: 0,
+        obj: r
+      });
+    });
+  }
+
+  // Sort by date
+  ops.sort((a,b)=>a.date.localeCompare(b.date));
+
+  // Stats
+  const totCompras = ops.filter(o=>o.tipo==='compra').reduce((s,o)=>s+o.cout,0);
+  const totVentas = ops.filter(o=>o.tipo==='venta').reduce((s,o)=>s+o.venta,0);
+  const totBen = ops.filter(o=>o.tipo==='venta').reduce((s,o)=>s+o.ben,0);
+  const totRep = ops.filter(o=>o.tipo==='rep').reduce((s,o)=>s+o.cout,0);
+
+  document.getElementById('libro-stats').innerHTML = `
+    <div class="sc r"><div class="sl">Total compras</div><div class="sv">${fm(totCompras)}</div></div>
+    <div class="sc g"><div class="sl">Total ventas</div><div class="sv">${fm(totVentas)}</div></div>
+    <div class="sc"><div class="sl">Beneficio</div><div class="sv" style="color:${totBen>=0?'var(--gr)':'var(--rd)'}">${fm(totBen)}</div></div>
+    <div class="sc p"><div class="sl">Reparaciones</div><div class="sv">${fm(totRep)}</div></div>`;
+
+  const tbody = document.getElementById('tb-libro');
+  if(!ops.length){
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty"><div class="ei">📒</div><p>Sin operaciones en '+yr+'</p></div></td></tr>';
+    return;
+  }
+
+  const TC = {compra:'bo',venta:'bg',rep:'bb'};
+  const TL = {compra:'🛒 Compra',venta:'💰 Venta',rep:'🔧 Reparación'};
+  tbody.innerHTML = ops.map(o=>`<tr>
+    <td class="mono" style="font-weight:700;color:var(--ac);font-size:.72rem">${o.ref}</td>
+    <td class="mono" style="font-size:.69rem">${fd(o.date)}</td>
+    <td><span class="bx ${TC[o.tipo]}">${TL[o.tipo]}</span></td>
+    <td class="tdm">${o.art}</td>
+    <td style="font-size:.76rem">${o.contra}</td>
+    <td class="mono">${o.cout>0?fm(o.cout):'—'}</td>
+    <td class="mono">${o.venta>0?fm(o.venta):'—'}</td>
+    <td class="mono ${o.ben>0?'pos':o.ben<0?'neg':''}">${o.tipo==='venta'?(o.ben>=0?'+':'')+fm(o.ben):'—'}</td>
+  </tr>`).join('');
+
+  document.getElementById('libro-totals').innerHTML = `
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <span>📅 Año: <b>${yr}</b></span>
+      <span>📊 Operaciones: <b>${ops.length}</b></span>
+      <span>🛒 Compras: <b class="neg">${fm(totCompras)}</b></span>
+      <span>💰 Ventas: <b class="pos">${fm(totVentas)}</b></span>
+      <span>📈 Beneficio: <b style="color:${totBen>=0?'var(--gr)':'var(--rd)'}">${totBen>=0?'+':''}${fm(totBen)}</b></span>
+    </div>`;
+}
+
+function expLibro(){
+  const yr = document.getElementById('libro-yr')?.value || new Date().getFullYear().toString();
+  let ops = [];
+  DB.a.filter(a=>a.date?.startsWith(yr)).forEach(a=>ops.push({ref:ensureDevNum(a),date:a.date,tipo:'Compra',art:a.art,contra:a.nom||'',cout:a.prix,venta:0,ben:-a.prix}));
+  DB.v.filter(v=>v.date?.startsWith(yr)).forEach(v=>{const c=v.serie?DB.a.find(a=>a.serie===v.serie):null;ops.push({ref:c?ensureDevNum(c):v.ref,date:v.date,tipo:'Venta',art:v.art,contra:v.cli||'',cout:v.cout||0,venta:v.prix*(v.qty||1),ben:v.ben});});
+  DB.r.filter(r=>r.date?.startsWith(yr)).forEach(r=>{const c=r.imei?DB.a.find(a=>a.serie===r.imei):null;ops.push({ref:c?ensureDevNum(c):r.ref,date:r.date,tipo:'Reparación',art:r.dev,contra:r.cli||'',cout:r.cout||0,venta:r.cout||0,ben:0});});
+  ops.sort((a,b)=>a.date.localeCompare(b.date));
+  let csv = "Ref.Dispositivo,Fecha,Tipo,Articulo,Contraparte,Coste,P.Venta,Beneficio\n";
+  ops.forEach(o=>csv+=`"${o.ref}",${o.date},"${o.tipo}","${o.art}","${o.contra}",${o.cout},${o.venta},${o.ben}
+`);
+  const blob = new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='LibroRegistro_ElectroHogar_'+yr+'.csv'; a.click();
+  toast('📒 Libro exportado','s');
+}
+
+function printLibro(tipoFilter){
+  const yr = document.getElementById('libro-yr')?.value || new Date().getFullYear();
+  const tipoSel = tipoFilter || document.getElementById('libro-tipo')?.value || '';
+  
+  // Build data to print based on filter
+  let ops = [];
+  const TL = {compra:'Compra',venta:'Venta',rep:'Reparación'};
+  
+  DB.a.filter(a=>a.date?.startsWith(yr) && (!tipoSel||tipoSel==='compra')).forEach(a=>{
+    ops.push({ref:ensureDevNum(a),date:a.date,tipo:'compra',art:a.art,contra:a.nom||'—',cout:a.prix,venta:0,ben:-a.prix});
+  });
+  DB.v.filter(v=>v.date?.startsWith(yr) && (!tipoSel||tipoSel==='venta')).forEach(v=>{
+    const c=v.serie?DB.a.find(a=>a.serie===v.serie):null;
+    ops.push({ref:c?ensureDevNum(c):v.ref,date:v.date,tipo:'venta',art:v.art,contra:v.cli||'—',cout:v.cout||0,venta:v.prix*(v.qty||1),ben:v.ben});
+  });
+  DB.r.filter(r=>r.date?.startsWith(yr) && (!tipoSel||tipoSel==='rep')).forEach(r=>{
+    const c=r.imei?DB.a.find(a=>a.serie===r.imei):null;
+    ops.push({ref:c?ensureDevNum(c):r.ref,date:r.date,tipo:'rep',art:r.dev,contra:r.cli||'—',cout:r.cout||0,venta:r.cout||0,ben:0});
+  });
+  ops.sort((a,b)=>a.date.localeCompare(b.date));
+
+  if(!ops.length){ toast('Sin datos para imprimir','e'); return; }
+
+  const totC = ops.filter(o=>o.tipo==='compra').reduce((s,o)=>s+o.cout,0);
+  const totV = ops.filter(o=>o.tipo==='venta').reduce((s,o)=>s+o.venta,0);
+  const totB = ops.filter(o=>o.tipo==='venta').reduce((s,o)=>s+o.ben,0);
+
+  const tipoLabels = {compra:'COMPRAS',venta:'VENTAS',rep:'REPARACIONES','':`TODAS LAS OPERACIONES`};
+  const tipoTitle = tipoLabels[tipoSel] || 'TODAS LAS OPERACIONES';
+  const tipoColors = {compra:'#a05010',venta:'#1a7a4a',rep:'#1040a0','':`#333`};
+
+  const rows = ops.map(o=>{
+    const tc={compra:'#fde8cc',venta:'#d4f7e7',rep:'#d0e8ff'};
+    const tl={compra:'Compra',venta:'Venta',rep:'Reparación'};
+    return '<tr>'
+      +'<td style="font-family:monospace;font-weight:700;color:#1a5fa8;font-size:8.5pt">'+o.ref+'</td>'
+      +'<td style="font-size:8.5pt">'+fd(o.date)+'</td>'
+      +'<td><span style="background:'+tc[o.tipo]+';padding:2px 6px;border-radius:4px;font-size:8pt;font-weight:700">'+tl[o.tipo]+'</span></td>'
+      +'<td>'+o.art+'</td>'
+      +'<td style="font-size:8.5pt">'+o.contra+'</td>'
+      +'<td style="text-align:right;font-family:monospace">'+(o.cout>0?o.cout.toFixed(2)+' €':'—')+'</td>'
+      +'<td style="text-align:right;font-family:monospace">'+(o.venta>0?o.venta.toFixed(2)+' €':'—')+'</td>'
+      +'<td style="text-align:right;font-family:monospace;font-weight:700;color:'+(o.ben>0?'#1a7a4a':o.ben<0?'#c00':'#333')+'">'
+        +(o.tipo==='venta'?(o.ben>=0?'+':'')+o.ben.toFixed(2)+' €':'—')+'</td>'
+      +'</tr>';
+  }).join('');
+
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    +'<title>Libro Registro '+tipoTitle+' '+yr+' — Electro Hogar</title>'
+    +'<style>'
+    +'body{font-family:Arial,sans-serif;font-size:10pt;color:#000;margin:0;padding:14mm}'
+    +'h1{font-size:13pt;margin:0 0 3px;color:'+tipoColors[tipoSel]+'}'
+    +'.sub{font-size:9pt;color:#666;margin:0 0 12px}'
+    +'table{width:100%;border-collapse:collapse;font-size:9pt}'
+    +'th{background:#333;color:#fff;padding:6px 8px;text-align:left;font-size:8.5pt}'
+    +'tr:nth-child(even){background:#f9f9f9}'
+    +'td{padding:5px 8px;border-bottom:1px solid #eee}'
+    +'.tot{margin-top:12px;padding:10px;border:2px solid #333;border-radius:4px;font-size:10pt;display:flex;gap:30px}'
+    +'@page{size:A4 portrait;margin:0}'
+    +'</style></head><body>'
+    +'<h1>📒 Libro Registro — '+tipoTitle+' '+yr+'</h1>'
+    +'<p class="sub">Electro Hogar Segundamano · Generado: '+new Date().toLocaleDateString('es-ES')+' · Total registros: '+ops.length+'</p>'
+    +'<table><thead><tr>'
+    +'<th>N° Dispositivo</th><th>Fecha</th><th>Tipo</th>'
+    +'<th>Artículo</th><th>Contraparte</th>'
+    +'<th style="text-align:right">Coste</th>'
+    +'<th style="text-align:right">P.Venta</th>'
+    +'<th style="text-align:right">Beneficio</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<div class="tot">'
+    +(tipoSel!=='venta'?'<span>🛒 Total compras: <b style=color:#c00>'+totC.toFixed(2)+' €</b></span>':'')
+    +(tipoSel!=='compra' && tipoSel!=='rep'?'<span>💰 Total ventas: <b style=color:#1a7a4a>'+totV.toFixed(2)+' €</b></span>':'')
+    +(tipoSel!=='compra' && tipoSel!=='rep'?'<span>📈 Beneficio: <b style=color:'+(totB>=0?'#1a7a4a':'#c00')+'>'+(totB>=0?'+':'')+totB.toFixed(2)+' €</b></span>':'')
+    +'<span>📊 Registros: <b>'+ops.length+'</b></span>'
+    +'</div>'
+    +'</body></html>';
+
+  const w = window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+  setTimeout(()=>w.print(), 600);
+}
+// ══ QUICK ENTRY ══
+let qvPay = 'Efectivo';
+let qvCatId = '';
+let qaCatId = '';
+let qrAvType = 'Otro';
+let fabOpen = false;
+
+function toggleFAB(){
+  fabOpen = !fabOpen;
+  document.getElementById('fab-menu').classList.toggle('on', fabOpen);
+  document.getElementById('fab-main').textContent = fabOpen ? '✕' : '⚡';
+}
+function closeFAB(){
+  fabOpen = false;
+  document.getElementById('fab-menu').classList.remove('on');
+  document.getElementById('fab-main').textContent = '⚡';
+}
+
+// Build quick cat grids
+function buildQCats(gid, onSelect){
+  const el = document.getElementById(gid);
+  if(!el) return;
+  el.innerHTML = CATS.map(c=>`<div class="qcat" onclick="(${onSelect})('${c.id}','${c.l}',this)">
+    <span>${c.i}</span>${c.l.slice(0,8)}
+  </div>`).join('');
+}
+
+// ─ QUICK VENTA ─
+function openQV(){
+  closeFAB();
+  qvCatId=''; qvPay='Efectivo';
+  document.getElementById('qv-s1').style.display='block';
+  document.getElementById('qv-s2').style.display='none';
+  ['qv-art','qv-prix','qv-cout','qv-cli'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  document.getElementById('qv-ben-preview').style.display='none';
+  document.querySelectorAll('#qv-pays .qpay').forEach(b=>b.classList.remove('on'));
+  document.querySelector('#qv-pays .qpay').classList.add('on');
+  buildQCats('qv-cats', 'selQVCat');
+  om('mqv');
+}
+function selQVCat(id, label, el){
+  qvCatId = id;
+  document.querySelectorAll('#qv-cats .qcat').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  // Go to step 2
+  setTimeout(()=>{
+    document.getElementById('qv-s1').style.display='none';
+    document.getElementById('qv-s2').style.display='block';
+    document.getElementById('qv-art').focus();
+  }, 150);
+}
+function qvBack(){
+  document.getElementById('qv-s1').style.display='block';
+  document.getElementById('qv-s2').style.display='none';
+}
+function selQPay(pay, el){
+  qvPay = pay;
+  document.querySelectorAll('#qv-pays .qpay').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+}
+function qvBen(){
+  const p=parseFloat(document.getElementById('qv-prix').value)||0;
+  const co=parseFloat(document.getElementById('qv-cout').value)||0;
+  const el=document.getElementById('qv-ben-preview');
+  if(p&&co){
+    const b=p-co; const pct=co>0?(b/co*100).toFixed(0):0;
+    el.style.display='block';
+    el.innerHTML=`Ben: <span class="${b>=0?'pos':'neg'}">${b>=0?'+':''}${fm(b)}</span> · Margen: <b>${pct}%</b>`;
+  } else { el.style.display='none'; }
+}
+function sugQV(val){
+  const s=document.getElementById('qv-sug2');
+  if(!val||val.length<2){s.style.display='none';return;}
+  const m=DB.i.filter(x=>x.etat==='Disponible'&&x.art.toLowerCase().includes(val.toLowerCase())).slice(0,4);
+  if(!m.length){s.style.display='none';return;}
+  s.innerHTML=m.map(x=>`<div class="sui" onclick="selQVInv(${x.id})">
+    <b>${x.art}</b> <span style="color:var(--t2);font-size:.68rem">${x.serie||''} · ${fm(x.cout)} → ${fm(x.pv)}</span>
+  </div>`).join('');
+  s.style.display='block';
+}
+function selQVInv(id){
+  const x=DB.i.find(i=>i.id===id);if(!x)return;
+  document.getElementById('qv-art').value=x.art;
+  document.getElementById('qv-cout').value=x.cout||'';
+  document.getElementById('qv-prix').value=x.pv||'';
+  document.getElementById('qv-sug2').style.display='none';
+  qvBen();
+  document.getElementById('qv-prix').focus();
+}
+function qvSave(doPrint){
+  const art=document.getElementById('qv-art').value.trim();
+  const prix=parseFloat(document.getElementById('qv-prix').value)||0;
+  if(!art){toast('¿Producto?','e');document.getElementById('qv-art').focus();return;}
+  if(!prix){toast('¿Precio?','e');document.getElementById('qv-prix').focus();return;}
+  const cout=parseFloat(document.getElementById('qv-cout').value)||0;
+  const cli=document.getElementById('qv-cli').value.trim()||'—';
+  const catLabel=CATS.find(c=>c.id===qvCatId)?.l||'Otro';
+  const v={id:uid(),ref:'V-'+String(DB.nid-1).padStart(4,'0'),date:today(),hora:new Date().toTimeString().slice(0,5),
+    art,cat:catLabel,cli,cout,prix,qty:1,ben:prix-cout,pay:qvPay,serie:'',notes:''};
+  DB.v.unshift(v);
+  if(qvPay==='Crédito') DB.cr.unshift({id:uid(),type:'cliente',nom:cli,tel:'',motif:'Venta '+v.ref,mnt:prix,pay:0,date:today(),ech:''});
+  autoCLI(cli);save();cm('mqv');
+  renderV();updateB();populateMF();
+  toast('✅ '+v.ref+' — '+fm(prix)+(cout?' · Ben: '+fm(prix-cout):''),'s');
+  if(doPrint){printV=v;openPrint(v);}
+}
+function qvSavePrint(){ qvSave(true); }
+
+// ─ QUICK COMPRA ─
+function openQA(){
+  closeFAB();
+  qaCatId='';
+  ['qa-art','qa-prix','qa-nom','qa-dni','qa-serie'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  buildQCats('qa-cats', 'selQACat');
+  om('mqa');
+  setTimeout(()=>document.getElementById('qa-art').focus(),300);
+}
+function selQACat(id, label, el){
+  qaCatId=id;
+  document.querySelectorAll('#qa-cats .qcat').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  if(!document.getElementById('qa-art').value) document.getElementById('qa-art').value=label+' ';
+  document.getElementById('qa-art').focus();
+}
+function qaSave(){
+  const art=document.getElementById('qa-art').value.trim();
+  const prix=parseFloat(document.getElementById('qa-prix').value)||0;
+  if(!art){toast('¿Producto?','e');document.getElementById('qa-art').focus();return;}
+  if(!prix){toast('¿Precio?','e');document.getElementById('qa-prix').focus();return;}
+  const catLabel=CATS.find(c=>c.id===qaCatId)?.l||'Otro';
+  const a={id:uid(),ref:'A-'+String(DB.nid-1).padStart(4,'0'),date:today(),hora:new Date().toTimeString().slice(0,5),
+    art,cat:catLabel,serie:document.getElementById('qa-serie').value.trim(),prix,
+    nom:document.getElementById('qa-nom').value.trim(),dni:document.getElementById('qa-dni').value.trim(),
+    telv:'',etat:document.getElementById('qa-etat').value,pv:0,qty:1,notes:''};
+  DB.a.unshift(a);
+  if(CFG.autoinv) DB.i.unshift({id:uid(),ref:a.ref,art,cat:catLabel,serie:a.serie,cout:prix,pv:0,etat:'Disponible',qty:1,date:today()});
+  autoCLI(a.nom);save();cm('mqa');
+  renderA();populateMF();
+  toast('🛒 '+a.ref+' — '+fm(prix),'s');
+}
+
+// ─ QUICK REPARACION ─
+function openQR(){
+  closeFAB();
+  qrAvType='Otro';
+  ['qr-dev','qr-cout','qr-cli','qr-tel','qr-prob2'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  document.querySelectorAll('#mqr .qpay').forEach(b=>b.classList.remove('on'));
+  om('mqr');
+  setTimeout(()=>document.getElementById('qr-dev').focus(),300);
+}
+function selQAv(tipo, el){
+  qrAvType=tipo;
+  document.querySelectorAll('#mqr .qpay').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  const prob=document.getElementById('qr-prob2');
+  if(!prob.value) prob.value=tipo;
+}
+function qrSave(){
+  const dev=document.getElementById('qr-dev').value.trim();
+  const cli=document.getElementById('qr-cli').value.trim()||'—';
+  if(!dev){toast('¿Dispositivo?','e');document.getElementById('qr-dev').focus();return;}
+  const r={id:uid(),ref:'REP-'+String(DB.nid-1).padStart(4,'0'),date:today(),hora:new Date().toTimeString().slice(0,5),
+    dev,cat:'Móvil',imei:'',cli,tel:document.getElementById('qr-tel').value.trim(),
+    cat2:qrAvType,prob:document.getElementById('qr-prob2').value.trim()||qrAvType,
+    cout:parseFloat(document.getElementById('qr-cout').value)||0,liv:'',notes:'',ei:0,log:[]};
+  DB.r.unshift(r);autoCLI(cli,r.tel);save();cm('mqr');
+  renderR();updateB();
+  toast('🔧 '+r.ref+' — '+dev,'s');
+}
+
+// ── KEYBOARD SHORTCUT: press V for venta, C for compra, R for rep ──
+document.addEventListener('keydown', e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT') return;
+  if(document.querySelector('.ov.on')) return;
+  if(e.key==='v'||e.key==='V') openQV();
+  else if(e.key==='c'||e.key==='C') openQA();
+  else if(e.key==='r'||e.key==='R') openQR();
+  else if(e.key==='d'||e.key==='D') go('cred',document.getElementById('nav-quick'));
+  else if(e.key==='t'||e.key==='T') go('tareas',document.getElementById('nav-quick'));
+});
+// ══ RENDER QUICK DASHBOARD ══
+function renderQuick(){
+  // Date
+  const el=document.getElementById('quick-fecha');
+  if(el) el.textContent=new Date().toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+
+  // Stats hoy
+  const tod=today();
+  const vHoy=DB.v.filter(x=>x.date===tod);
+  const rHoy=DB.r.filter(x=>x.date===tod);
+  const totV=vHoy.reduce((s,x)=>s+x.prix*(x.qty||1),0);
+  const totB=vHoy.reduce((s,x)=>s+x.ben,0);
+  const repAct=DB.r.filter(x=>x.ei<4).length;
+  const deudas=DB.cr.filter(x=>x.mnt>x.pay);
+  const totD=deudas.reduce((s,x)=>s+(x.mnt-x.pay),0);
+
+  const qs=document.getElementById('qs-stats');
+  if(qs) qs.innerHTML=`
+    <div class="sc g"><div class="sl">Ventas hoy</div><div class="sv">${vHoy.length}</div></div>
+    <div class="sc"><div class="sl">CA hoy</div><div class="sv">${fm(totV)}</div></div>
+    <div class="sc ${totB>=0?'g':'r'}"><div class="sl">Beneficio hoy</div><div class="sv" style="color:${totB>=0?'var(--gr)':'var(--rd)'}">${totB>=0?'+':''}${fm(totB)}</div></div>
+    <div class="sc o"><div class="sl">Reparac. activas</div><div class="sv">${repAct}</div></div>
+    <div class="sc r"><div class="sl">Deudas</div><div class="sv">${fm(totD)}</div></div>`;
+
+  // Tareas
+  const tareas=DB.t.filter(x=>!x.done&&(x.role==='owner'||x.role==='both')).slice(0,6);
+  const tb=document.getElementById('qs-tbadge');
+  if(tb){ tb.textContent=tareas.length; tb.style.display=tareas.length?'':'none'; }
+  const tEl=document.getElementById('qs-tareas');
+  if(tEl) tEl.innerHTML=tareas.length ? tareas.map(t=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--bd)">
+      <div class="chk ${t.done?'on':''}" onclick="toggleT(${t.id});renderQuick()" style="flex-shrink:0">${t.done?'✓':''}</div>
+      <div style="flex:1">
+        <div style="font-size:.8rem;font-weight:600">${t.prio==='urg'?'🔴':t.prio==='low'?'🟢':'🟡'} ${t.tit}</div>
+        ${t.date?`<div style="font-size:.65rem;color:${t.date<tod?'var(--rd)':'var(--t2)'}">${fd(t.date)}${t.date<tod?' ⚠️ Atrasada':''}</div>`:''}
+      </div>
+    </div>`).join('') :
+    '<div class="empty" style="padding:12px"><div class="ei" style="font-size:1.5rem">✅</div><p style="font-size:.75rem">Sin tareas pendientes</p></div>';
+
+  // Deudas
+  const dtot=document.getElementById('qs-dtot');
+  if(dtot) dtot.textContent=deudas.length?fm(totD):'';
+  // Update button subtitles
+  const dsub=document.getElementById('qs-dsub');
+  if(dsub) dsub.textContent=deudas.length?(deudas.length+' deudas · '+fm(totD)):'Sin deudas ✅';
+  const tsub=document.getElementById('qs-tsub');
+  const tpend=DB.t.filter(x=>!x.done&&(x.role==='owner'||x.role==='both')).length;
+  if(tsub) tsub.textContent=tpend?(tpend+' pendientes'):'Al día ✅';
+  const dEl=document.getElementById('qs-deudas');
+  if(dEl) dEl.innerHTML=deudas.length ? deudas.slice(0,5).map(d=>{
+    const rest=d.mnt-d.pay;
+    const late=d.ech&&d.ech<tod;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 4px;border-bottom:1px solid var(--bd)">
+      <div>
+        <div style="font-size:.8rem;font-weight:600">${d.type==='cliente'?'👤':'🏭'} ${d.nom}</div>
+        <div style="font-size:.65rem;color:${late?'var(--rd)':'var(--t2)'}">${d.motif||'—'}${late?' ⚠️ Vencida':''}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:.88rem;font-weight:800;color:var(--rd)">${fm(rest)}</div>
+        <div style="font-size:.62rem;color:var(--t2)">${d.type==='cliente'?'debe':'debemos'}</div>
+      </div>
+    </div>`;
+  }).join('') :
+  '<div class="empty" style="padding:12px"><div class="ei" style="font-size:1.5rem">✅</div><p style="font-size:.75rem">Sin deudas activas</p></div>';
+
+  // Últimas ops hoy
+  const ops=[];
+  vHoy.forEach(x=>ops.push({type:'v',ref:x.ref,txt:x.art,amt:x.prix*(x.qty||1),ben:x.ben,date:x.date,hora:x.hora||''}));
+  DB.a.filter(x=>x.date===tod).forEach(x=>ops.push({type:'a',ref:x.ref,txt:x.art,amt:-x.prix,ben:0,date:x.date,hora:x.hora||''}));
+  DB.r.filter(x=>x.date===tod).forEach(x=>ops.push({type:'r',ref:x.ref,txt:x.dev,amt:0,ben:0,date:x.date,hora:x.hora||''}));
+  ops.sort((a,b)=>(b.hora||'').localeCompare(a.hora||''));
+  const totHoy=vHoy.reduce((s,x)=>s+x.prix*(x.qty||1),0);
+  const hEl=document.getElementById('qs-hoy-tot');
+  if(hEl) hEl.textContent=ops.length?'Total: '+fm(totHoy):'';
+  const oEl=document.getElementById('qs-ops');
+  if(oEl) oEl.innerHTML=ops.length ? ops.slice(0,8).map(o=>{
+    const ic={v:'💰',a:'🛒',r:'🔧'}[o.type];
+    const col={v:'var(--gr)',a:'var(--or)',r:'var(--ac)'}[o.type];
+    return `<div style="display:flex;align-items:center;gap:10px;padding:7px 8px;border-bottom:1px solid var(--bd)">
+      <span style="font-size:1.1rem">${ic}</span>
+      <div style="flex:1">
+        <div style="font-size:.8rem;font-weight:600">${o.txt}</div>
+        <div style="font-size:.65rem;color:var(--t2)">${o.ref} ${o.hora?'· '+o.hora:''}</div>
+      </div>
+      ${o.type==='v'?`<div style="text-align:right"><div style="font-size:.85rem;font-weight:700;color:${col}">${fm(o.amt)}</div><div style="font-size:.62rem;color:${o.ben>=0?'var(--gr)':'var(--rd)'}">${o.ben>=0?'+':''}${fm(o.ben)}</div></div>`:''}
+      ${o.type==='a'?`<div style="font-size:.85rem;font-weight:700;color:var(--or)">-${fm(Math.abs(o.amt))}</div>`:''}
+    </div>`;
+  }).join('') :
+  '<div class="empty" style="padding:12px"><div class="ei" style="font-size:1.5rem">🌅</div><p style="font-size:.75rem">Sin operaciones hoy</p></div>';
+}
 // ══ INIT ══
 applyAll();updateB();
 // Check overdue tasks
@@ -2386,7 +2952,8 @@ setInterval(()=>{
   const ci=document.getElementById('fb-cloud-info');
   if(ci) ci.textContent = fbConnected ? '☁️ Firebase: electro-hogar-a6935 — datos en la nube' : '📴 Firebase: sin conexión — datos locales seguros';
 },5000);
-
+},150);
+},50);
 </script>
 
 </body>
